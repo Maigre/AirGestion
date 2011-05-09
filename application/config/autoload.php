@@ -64,7 +64,7 @@ $autoload['libraries'] = array('database', 'datamapper');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('form');
+$autoload['helper'] = array('form','formatfield','url');
 
 
 /*
@@ -109,7 +109,7 @@ $autoload['language'] = array();
 |
 */
 
-$autoload['model'] = array('datamappercustom');
+$autoload['model'] = array('dmc');
 
 
 /* End of file autoload.php */
