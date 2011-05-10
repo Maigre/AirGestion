@@ -12,34 +12,27 @@ class Formfield
 	private $format;
 	private $rules;
 	
-	private $mode; //display, print, form
+	public $mode; //display, print, form, hide
 	
 	//construct by passing name, RAW value, params (type, js, format, label)
-	function Formfield($name,$label,$value,$params,$mode=null)
+	function Formfield($name,$label,$params,$mode)
 	{
 		$this->name = $name;
 		$this->label = $label;
-		$this->raw_value = $value;
 		
-		$this->set_type($params);
-		if ($mode) $this->set_mode($mode);
-	}
-	
-	//set mode
-	function set_mode($mode)
-	{
-		$this->mode = $mode;	
-	}
-	
-	//set type and formatting
-	private function set_type($params)
-	{		
+		$this->raw_value = $params['value'];
+		
 		$this->format = null;
+		$this->rules = null;
+		$this->add_format($params['format']);
+		$this->add_rules($params['rules']);	
+		
+		unset($params['value']);
+		unset($params['format']);
+		unset($params['rules']);
 		
 		$this->type = $params[0];
-		$this->params = $params;
-		$this->add_format($params['format']);
-		$this->add_rules($params['rules']);						
+		$this->params = $params;			
 		
 		//add auto formatting rules !!
 		switch($this->type)
@@ -70,70 +63,66 @@ class Formfield
 			case 'flag':
 				$this->add_format('flag');
 			break;
-			
-			
-			/*OBSOLETE
-			case 'id_select':
-			case 'id_select_0':
-			case 'id_select_E':
-				$this->add_format('idlist');
-			break;
-			
-			case 'mlist_id':
-				$this->add_format('mlist_id');
-			break;
-			*/
 		}	
 		
+		$this->mode = $mode;	
 		$this->raw_to_use();
-			
-		return $this;
 	}
 	
-	//make use_value from raw_value
-	function raw_to_use() 
-	{
-		//cook use_value : apply formatting rules :
-		$this->use_value = $this->format($this->raw_value,'format',$this->mode);	
-	}
-	
-	//make raw_value from use_value
-	function use_to_raw() 
-	{
-		//cook raw_value : unapply formatting rules
-		$this->raw_value = $this->format($this->use_value,'unformat',$this->mode);	
-	}
 	
 	//recupere la valeur postée pour ce champs (repopulate)
-	function learn()  
+	public function learn()  
 	{
-		$this->use_value = $this->input->post($this->name);
+		if ($this->mode == 'form') $this->use_value = $this->input->post($this->name);
 	}
 	
-	//add this field to the validator engine
-	function add_to_validator()
+	//recupere les valeurs POST et ajoute au validator
+	public function checkField()
 	{
-		if ($this->rules != '')
-			$this->form_validation->set_rules($this->name,$this->label,$this->rules);
+		$this->learn();
+		$this->add_to_validator();
 	}
 	
 	// Get data RAW to save it !
-	function get_raw()
+	public function getRaw()
 	{
 		$this->use_to_raw();
 		return $this->raw_value;
 	}
 	
 	// Get data to USE it ! (HTML style)		
-	function get_use()
+	public function getUse()
 	{		
 		if ($this->mode == 'form') return $this->cook_field();
 		else if ($this->mode == 'hide') return '';
 		else return $this->use_value;
 	}
 	
+	///////////////////////////////////////
+	//add this field to the validator engine
+	private function add_to_validator()
+	{
+		if ($this->mode == 'form')
+			if ($this->rules != '')
+				$this->form_validation->set_rules($this->name,$this->label,$this->rules);
+	}
+	
+	//make use_value from raw_value
+	private function raw_to_use() 
+	{
+		//cook use_value : apply formatting rules :
+		$this->use_value = $this->format($this->raw_value,'format',$this->mode);	
+	}
+	
+	//make raw_value from use_value
+	private function use_to_raw() 
+	{
+		//cook raw_value : unapply formatting rules
+		$this->raw_value = $this->format($this->use_value,'unformat',$this->mode);	
+	}
+	
 	//Construit le champs formulaire au format HTML en fonction des parametres et valeurs par defaut envoyée
-	function cook_field()
+	private function cook_field()
 	{	
 		$params = $this->params;
 		
@@ -339,7 +328,7 @@ class Formfield
 		return form_error($this->name,'<div style="padding:0;margin:0;color:red";>','</div>').$field;
 	}
 	
-	function add_rule($rule,$force=false) //regle de verification
+	private function add_rule($rule,$force=false) //regle de verification
 	{
 		if ($this->rules == '') $this->rules = $rule;
 		else 
@@ -347,12 +336,11 @@ class Formfield
 			$rul = explode('|',$rule);
 			$for = explode('|',$this->rules);
 			foreach ($rul as $r) if ((!in_array($r,$for))||($force)) $this->rules .= '|'.$r;
-		}
-		
+		}	
 		return $this;
 	}
 	
-	function rem_rule($rule)
+	private function rem_rule($rule)
 	{
 		if($this->rules == $rule) $this->rules = '';
 		else 
@@ -362,7 +350,7 @@ class Formfield
 		}
 	}
 	
-	function add_format($rule,$force=false) //regle de formatage
+	private function add_format($rule,$force=false) //regle de formatage
 	{
 		if ($this->format == '') $this->format = $rule;
 		else 
@@ -373,12 +361,10 @@ class Formfield
 		}
 	}
 	
-	function format($val,$way) 
+	private function format($val,$way) 
 	{
-		$rules = explode('|',$this->format);
-		
+		$rules = explode('|',$this->format);	
 		foreach($rules as $rul) if ($rul != '') $val = $this->{'f_'.$rul}($val,$way);
-		
 		return $val;
 	}
 }
