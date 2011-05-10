@@ -1,5 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+include_once('formfield.php');
+
 class Dmc extends DataMapper {
 	
 	protected $description;
@@ -34,12 +36,12 @@ class Dmc extends DataMapper {
 	private $currentMode = null;
 	private $relationUpdated = array(); //list relation updated by checkFields() and that must be saved by saveAll()
 	
+	private $valid_DM = true;
 	
 	function Dmc()
-	{		
-		parent::DataMapper();
-		
-		if (!is_array($this->description)) {echo 'ERROR : No description for this object ! '.get_class($this); die;}
+	{				
+		if (!is_array($this->description)) {/*echo 'ERROR : No description for this object ! '.get_class($this); die;*/ $this->valid_DM = false;}
+		else parent::DataMapper();
 	}
 	
 	function makeFields($mode)
@@ -95,7 +97,7 @@ class Dmc extends DataMapper {
 	function checkFields($mode=null) //appelle checkField() pour chaque champs, si les champs sont valides, peuple les attributs de l'objet avec ceux-ci.
 	{
 		if (is_null($mode)) $mode = $this->currentMode;
-		if (!is_array($this->formfields))||($mode != $this->currentMode)) $this->makeFields($mode);	
+		if ((!is_array($this->formfields))||($mode != $this->currentMode)) $this->makeFields($mode);	
 		
 		//learn & add to validator	
 		foreach ($this->description as $name => $desc) $this->formfields[$name]->checkField(); 
@@ -123,7 +125,8 @@ class Dmc extends DataMapper {
 						{
 							if ($idrecieved > 0)
 							{
-								$newLink =  new {ucwords($table)}();
+								$className = ucwords($table);
+								$newLink =  new $className();
 								$newLink->get_by_id($idrecieved);
 								$this->{$table} = $newLink;
 								

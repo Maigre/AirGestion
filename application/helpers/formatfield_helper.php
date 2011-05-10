@@ -218,4 +218,3 @@ function f_mlist_id($val,$way,$mode)
 }
 
 */
-*/
