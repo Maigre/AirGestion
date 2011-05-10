@@ -27,8 +27,8 @@ class Groupe extends DataMapper {
 		);
 	
 	var $modes = array(
-		'display' => 'display',
-		'edit' => array('nom' => 'form')	
+		'display' => array(),
+		'form' => array()	
 		);
 
 	function Groupe()

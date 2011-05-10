@@ -27,8 +27,8 @@ class Situationfamiliale extends DataMapperCustom {
 		);
 	
 	var $modes = array(
-		'display' => 'display',
-		'edit' => array('nom' => 'form')	
+		'display' => array(),
+		'form' => array()	
 		);
 
 	function Situationfamiliale()
