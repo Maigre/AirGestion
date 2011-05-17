@@ -1,6 +1,6 @@
 <?php
 
-class Famille extends DataMapper {
+class Famille extends Dmc {
 	
 	var $has_one=array("groupes");
 	var $has_many=array("adherents");
@@ -94,7 +94,7 @@ class Famille extends DataMapper {
 	
 	function Famille()
 	{
-		parent::DataMapper();
+		parent::Dmc();
 	}
 	
 	function beforeMake()

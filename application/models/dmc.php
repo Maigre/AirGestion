@@ -68,9 +68,13 @@ class Dmc extends DataMapper {
 			//defval for linked fields (hasone!!)
 			else if ($desc['type'] == 'link') 
 			{
-				list($table,$link) = explode($name,'-');
-				if ($link == '') $link = 'nom';
-																			
+				$Ename = explode($name,'-');
+				$table = $Ename[0];
+				if (!isset($Ename[1])) $link = 'nom';
+				else $link = $Ename[1];
+				
+				print_r($table);
+				var_dump($this);		die;													
 				$this->{$table}->get();
 				$this->description[$name]['defval'] = $this->{$table}->{$link};
 			}
@@ -81,10 +85,10 @@ class Dmc extends DataMapper {
 		foreach ($this->description as $name => $desc)
 		{				
 			//merge rules & format into params
-			$desc['formfield']['format'] = $desc['format'];
-			$desc['formfield']['rules'] = $desc['rules'];
 			$desc['formfield']['value'] = $desc['defval'];
-	
+			if (isset($desc['format'])) $desc['formfield']['format'] = $desc['format'];
+			if (isset($desc['rules'])) $desc['formfield']['rules'] = $desc['rules'];
+			
 			//mode
 			$fmode = $mode;
 			if (isset($this->modes[$mode][$name])) $fmode = $this->modes[$mode][$name];
@@ -168,7 +172,8 @@ class Dmc extends DataMapper {
 		
 		foreach($this->formfields as $name=>$field) $data[$name] = $field->getUse();
 		
-		return $this->parser->parse(get_class($this).'/'.$template,$data,TRUE);
+		$CI =& get_instance(); 
+		return $CI->parser->parse('MJC/'.get_class($this).'/'.$template,$data,TRUE);
 	}
 	
 	function beforeMake()

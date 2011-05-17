@@ -1,6 +1,6 @@
 <?php
 
-class Csp extends DataMapper {
+class Csp extends Dmc {
 	
 	var $has_many=array("adherents");
 
@@ -15,16 +15,7 @@ class Csp extends DataMapper {
 		)
 	);
 	
-	var $templates = array(
-		'tpl1' => '<table>
-				<tr><th>Situation familiale</th></tr>
-				<tr><td>{nom}</td></tr>
-			     </table>',
-	
-		'tpl2' => '<table>
-				<tr><td>{nom}</td></tr>
-			     </table>'
-		);
+	var $templates = array();
 	
 	var $modes = array(
 		'display' => array(),
@@ -33,7 +24,7 @@ class Csp extends DataMapper {
 
 	function Csp()
 	{
-		parent::DataMapper();
+		parent::Dmc();
 	}
 
 }
