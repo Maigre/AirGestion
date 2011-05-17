@@ -19,17 +19,17 @@ class Formfield
 	{
 		$this->name = $name;
 		$this->label = $label;
+		if (!isset($this->label[1])) $this->label[1] = $this->label[0];
 		
 		$this->raw_value = $params['value'];
 		
 		$this->format = null;
 		$this->rules = null;
-		$this->add_format($params['format']);
-		$this->add_rules($params['rules']);	
+		if (isset($params['format'])) {$this->add_format($params['format']); unset($params['format']);}
+		if (isset($params['rules'])) {$this->add_rules($params['rules']); unset($params['rules']);}	 
+		if (!isset($params['js'])) $params['js'] = '';
 		
 		unset($params['value']);
-		unset($params['format']);
-		unset($params['rules']);
 		
 		$this->type = $params[0];
 		$this->params = $params;			
@@ -93,9 +93,9 @@ class Formfield
 	// Get data to USE it ! (HTML style)		
 	public function getUse()
 	{		
-		if ($this->mode == 'form') return $this->cook_field();
+		if ($this->mode == 'form') return $this->label[0].': '.$this->cook_field();
 		else if ($this->mode == 'hide') return '';
-		else return $this->use_value;
+		else return $this->label[1].': '.$this->use_value;
 	}
 	
 	///////////////////////////////////////
@@ -134,21 +134,21 @@ class Formfield
 		{
 			case 'text':
 				if ($params[1]) $data['size'] = $params[1];
-				$field = form_input($data,$this->value,$params['js']);
+				$field = form_input($data,$this->use_value,$params['js']);
 			break;
 			
 			case 'date':
-				if ($params[1]) $data['size'] = $params[1];
+				if (isset($params[1])) $data['size'] = $params[1];
 				else $data['size'] = 8;
-				$field = form_input($data,$this->value,$params['js']);
+				$field = form_input($data,$this->use_value,$params['js']);
 			break;
 			
 			case 'hidden':
-				$field = form_hidden($this->name,$this->value);
+				$field = form_hidden($this->name,$this->use_value);
 			break;
 			
 			case 'check':
-				if ($this->value == 1) $val = true;
+				if ($this->use_value == 1) $val = true;
 				else $val = false;
 				$field = form_checkbox($data,1,$val,$params['js']);
 			break;
@@ -156,23 +156,24 @@ class Formfield
 			case 'yesno':
 				$ye = false;
 				$no = false;
-				if ($this->value == 1) $ye = 1;
-				else if (($this->value == 0)&&(!is_null($this->value))) $no = 1;
+				if ($this->use_value == 1) $ye = 1;
+				else if (($this->use_value == 0)&&(!is_null($this->use_value))) $no = 1;
 				$field = form_radio($data,1,$ye,$params['js']).'oui '.form_radio($data,0,$no,$params['js']).'non ';
 			break;
 			
 			case 'radio':
-				$field = form_radio($data,$params[1],$this->value,$params['js']);
+				if (!isset($params[1])) $params[1] = 1;
+				$field = form_radio($data,$params[1],$this->use_value,$params['js']);
 			break;
 			
 			case 'nbr_list10':
 				$arr = array(1=>1,2=>2,3=>3,4=>4,5=>5,6=>6,7=>7,8=>8,9=>9,10=>10);
-				$field = form_dropdown($this->name,$arr,$this->value,$params['js']);
+				$field = form_dropdown($this->name,$arr,$this->use_value,$params['js']);
 			break;
 			
 			case 'select':
 				if (!is_array($params[1])) $params[1] = array();
-				$field = form_dropdown($this->name,$params[1],$this->value,$params['js']);
+				$field = form_dropdown($this->name,$params[1],$this->use_value,$params['js']);
 			break;
 			
 			
@@ -192,10 +193,10 @@ class Formfield
 				
 				$js = 'onChange="if (this.value == \'*autre\') show(\''.$this->name.'_autre\'); else hide(\''.$this->name.'_autre\');"';
 				
-				if ((!in_array($this->value,$options))&&($this->value != '')) {$defAutre = $this->value; $this->value = '*autre';}
+				if ((!in_array($this->use_value,$options))&&($this->use_value != '')) {$defAutre = $this->value; $this->use_value = '*autre';}
 				else $defAutre = '';
 			
-				$field = form_dropdown($this->name,$options,$this->value,$js);
+				$field = form_dropdown($this->name,$options,$this->use_value,$js);
 			
 				$data = array(
 					'name' => $this->name.'_autre',
@@ -229,7 +230,7 @@ class Formfield
 				
 					foreach($obj->lister->get($table[1]) as $i=>$v) $options[$i] = $v;
 				
-					$field = form_dropdown($this->name,$options,$this->value,$params['js']);
+					$field = form_dropdown($this->name,$options,$this->use_value,$params['js']);
 				}
 			break;
 			
@@ -241,7 +242,7 @@ class Formfield
 				$table = $this->name;
 				if ($table != '')
 				{
-					$defA = explode('|',$this->value);
+					$defA = explode('|',$this->use_value);
 				
 					$obj =& get_instance();
 					$obj->load->model('List_model','lister');
@@ -284,7 +285,7 @@ class Formfield
 			case 'textarea':
 				if ($params[1]) $data['rows'] = $params[1];
 				if ($params[2]) $data['cols'] = $params[2];
-				$field = form_textarea($data,$this->value,$params['js']);
+				$field = form_textarea($data,$this->use_value,$params['js']);
 			break;
 			
 			case 'submit':
@@ -328,7 +329,7 @@ class Formfield
 		return form_error($this->name,'<div style="padding:0;margin:0;color:red";>','</div>').$field;
 	}
 	
-	private function add_rule($rule,$force=false) //regle de verification
+	private function add_rules($rule,$force=false) //regle de verification
 	{
 		if ($this->rules == '') $this->rules = $rule;
 		else 
@@ -364,7 +365,7 @@ class Formfield
 	private function format($val,$way) 
 	{
 		$rules = explode('|',$this->format);	
-		foreach($rules as $rul) if ($rul != '') $val = $this->{'f_'.$rul}($val,$way);
+		foreach($rules as $rul) if ($rul != '') {$functionName = 'f_'.$rul; $val = $functionName($val,$way,$this->mode);}
 		return $val;
 	}
 }

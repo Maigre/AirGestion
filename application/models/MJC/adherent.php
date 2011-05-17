@@ -1,6 +1,6 @@
 <?php
 
-class Adherent extends DataMapper {
+class Adherent extends Dmc {
 	
 	var $has_one=array("csps", "situationfamiliales", "statutadherents");
 	var $has_many=array("familles");
@@ -110,7 +110,7 @@ class Adherent extends DataMapper {
 				'defval'	=> '',
 				'type'		=> 'normal',
 				'formfield' 	=> array('text', 15)
-		),
+		)/*,
 		'csp' => 	array(
 				'label' 	=> array('CSP'),
 				'rules' 	=> array('xss_clean'),
@@ -124,21 +124,9 @@ class Adherent extends DataMapper {
 				'defval'	=> '',
 				'type'		=> 'link',
 				'formfield' 	=> array('listbox')
-		)
+		)*/
 	);
 	
-	//Generation des templates
-		$tpl1 = '<table>';
-		foreach $description as $nom_champ=>$properties
-		{
-			$tpl1 .= '<tr><td>{'.$nom_champ.'}</td></tr>';
-		}
-		$tpl1 .= '</table>';
-	
-		'tpl2' => '<table>
-				<tr><td>{nom}</td></tr>
-			     </table>'
-		);
 	var $templates = array('template1','template2_mainview_adulte','template2_mainview_enfant');
 	
 	var $modes = array(
@@ -148,7 +136,7 @@ class Adherent extends DataMapper {
 
 	function Adherent()
 	{
-		parent::DataMapper();
+		parent::Dmc();
 	}
 
 }

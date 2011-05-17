@@ -1,6 +1,6 @@
 <?php
 
-class Situationfamiliale extends DataMapperCustom {
+class Situationfamiliale extends Dmc {
 	
 	var $has_many=array("adherents");
 
@@ -15,16 +15,7 @@ class Situationfamiliale extends DataMapperCustom {
 			)
 		);
 	
-	var $templates = array(
-		'tpl1' => '<table>
-				<tr><th>Situation familiale</th></tr>
-				<tr><td>{nom}</td></tr>
-			     </table>',
-	
-		'tpl2' => '<table>
-				<tr><td>{nom}</td></tr>
-			     </table>'
-		);
+	var $templates = array();
 	
 	var $modes = array(
 		'display' => array(),
@@ -33,7 +24,7 @@ class Situationfamiliale extends DataMapperCustom {
 
 	function Situationfamiliale()
 	{
-		parent::__construct();
+		parent::Dmc();
 	}
 	
 	

@@ -1,3 +1,4 @@
 <table>
-	<tr><td><strong>{Nom}</strong></td><td>{Prenom}</td></tr>
+	<tr><td><strong>{nom}</strong></td></tr>
+	<tr><td>{prenom}</td></tr>
 </table>
