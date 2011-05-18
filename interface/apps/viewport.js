@@ -141,6 +141,20 @@ MainApp.ViewPort = {
 	
 	reload: function() {
 		window.location.reload();
+	}
+	
+	askAndDo : function (winID,controller)
+	{	
+		Ext.Ajax.request({
+		    url: 'http://localhost/AirGestion/index.php/'+controller,
+		    method : 'POST',
+		    params : {
+		    	win: winID
+		    }
+		    success: function(response){
+		    		Ext.get('work-area').update(response.responseText,true);
+		    }
+		});
 	}	
 }
 
