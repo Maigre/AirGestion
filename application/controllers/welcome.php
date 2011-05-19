@@ -5,13 +5,7 @@ class Welcome extends CI_Controller {
 	
 	public function index()
 	{
-		$adherent = new Adherent();
-		
-		$adherent->makeFields('form');
-		
-		$data['adherent'] = $adherent->display('template1');		
-		
-		$this->load->view('welcome_message',$data);
+		$this->load->view('mainview');
 	}
 }
 
