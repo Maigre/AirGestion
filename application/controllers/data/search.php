@@ -30,7 +30,7 @@ class Search extends CI_Controller {
 
 		//initialize recieved vars from POST
 		$vars = array(
-			'name_search' 	=> 	'VER DEAU'
+			'name_search' 	=> 	$this->input->post('searched_name')
 		);
 		
 		//retrieve search argument from POST and sanitize (may be use CI methods to santize ?)

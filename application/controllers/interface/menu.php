@@ -1,17 +1,18 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Welcome extends CI_Controller {
+class Menu extends CI_Controller {
 
 	
 	public function index()
 	{
-
+		echo 'ok';
 	}
 	
 	public function adherent()
 	{
-		$this->load->view('menu/adherent_search');
-		$this->load->view('menu/adherent_familynew');
+		$data['win']=$this->input->post('win');
+		$this->load->view('menu/adherent_search.php',$data);
+		//$this->load->view('menu/adherent_familynew');
 	}
 }
 

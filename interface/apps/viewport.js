@@ -1,11 +1,24 @@
 
 Ext.ns('MainApp');
 
+function askAndDo (winID,controller)
+	{	
+		Ext.Ajax.request({
+		    url: 'http://localhost/AirGestion/index.php/'+controller,
+		    method : 'POST',
+		    params : {
+		    	win: winID
+		    },
+		    success: function(response){
+		    		Ext.get('working-area').update(response.responseText,true);
+		    }
+		});
+	}	
+
 function MenuItem() {
 		this.panel = null;
 		this.get = function(){return this.panel;};
-		//this.load = function(){
-				
+		this.load = function(){askAndDo(this.panel.id,this.panel.url);};
 	}
 	
 /*function windowcreate(){
@@ -53,7 +66,8 @@ MainApp.ViewPort = {
 				id: 'Menu_Adherents-panel',
 				title: 'Adherents',
 				iconCls: 'user',
-				html: 'Menu Adherents...',
+				//html: 'Menu Adherents...',
+				layout: 'auto',
 				url: 'interface/menu/adherent'
 			});
 		this.Menu_Activites.panel = new Ext.Panel({
@@ -133,29 +147,17 @@ MainApp.ViewPort = {
 			});
 		
 		
-		this.AppPort.layout.regions.center.add(this.Window_User.get()); // using add()
-        this.Window_User.get().show();
+		//this.AppPort.layout.regions.center.add(this.Window_User.get()); // using add()
+        //this.Window_User.get().show();
+        this.Menu_Adherents.load();
         
         //this.AppPort.endUpdate();  	
 	},
 	
 	reload: function() {
 		window.location.reload();
-	}
-	
-	askAndDo : function (winID,controller)
-	{	
-		Ext.Ajax.request({
-		    url: 'http://localhost/AirGestion/index.php/'+controller,
-		    method : 'POST',
-		    params : {
-		    	win: winID
-		    }
-		    success: function(response){
-		    		Ext.get('work-area').update(response.responseText,true);
-		    }
-		});
-	}	
+	},
+		
 }
 
 

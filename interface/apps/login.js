@@ -16,7 +16,7 @@ MainApp.Login = {
 		    	if (ans.success) 
 		    	{
 		    		this.user = ans.user;		    		
-		    		Ext.Msg.alert('Identification', 'Bienvenue '+this.user+ ' !');
+		    		//Ext.Msg.alert('Identification', 'Bienvenue '+this.user+ ' !');
 				}
 				else MainApp.Login.login();
 		    }
