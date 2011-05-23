@@ -157,7 +157,7 @@ Ext.override(Ext.form.Field, {
 				    element: 'el', //bind to the underlying el property on the panel
 				    fn: function(){ 
 				    	console.log('click el');
-				    	askAndDo (MainApp.Viewport.Apport.region.center.id,'interface/famille/display/1')
+				    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display');//'display/1');
 				    }
 				},
 				dblclick: {

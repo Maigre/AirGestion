@@ -2,8 +2,8 @@
 
 class Famille extends Dmc {
 	
-	var $has_one=array("groupes");
-	var $has_many=array("adherents");
+	var $has_one=array("groupe");
+	var $has_many=array("adherent");
 
 	var $description = array(
 		'nomreferent' => array(
@@ -27,7 +27,7 @@ class Famille extends Dmc {
 				'type'		=> 'normal',
 				'formfield' 	=> array('text', 40)
 		),
-		'adresse2' =>	array(,
+		'adresse2' =>	array(
 				'label' 	=> array('Adresse n°2'),
 				'rules' 	=> array('xss_clean'),
 				'defval'	=> '',
@@ -35,7 +35,7 @@ class Famille extends Dmc {
 				'formfield' 	=> array('text', 40)
 		),
 		'codepostal' => array(
-				'label' 	=> array('Code postal)',
+				'label' 	=> array('Code postal'),
 				'rules' 	=> array('xss_clean', 'required'),
 				'defval'	=> '',
 				'type'		=> 'normal',
@@ -100,11 +100,12 @@ class Famille extends Dmc {
 	function beforeMake()
 	{
 		// Get adherents linked to this famille and select the one with statutadherent=referent
-		$this->adherent->where_related_statutadherent('nom','referent')->get();
+		//$this->adherent->where_related_statutadherent('nom','referent')->get();
 		
 		// full the defval.
-		$this->description['nomreferent']['defval']=$this->adherent->nom;
-		$this->description['prenomreferent']['defval']=$this->adherent->prenom;
+		//$this->description['nomreferent']['defval']=$this->adherent->nom;
+		//$this->description['prenomreferent']['defval']=$this->adherent->prenom;
 	}
 
 }
+

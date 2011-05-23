@@ -2,8 +2,8 @@
 
 class Adherent extends Dmc {
 	
-	var $has_one=array("csps", "situationfamiliales", "statutadherents");
-	var $has_many=array("familles");
+	var $has_one=array(/*"csp", "situationfamiliale",*/ "statutadherent");
+	var $has_many=array("famille");
 	
 	var $description = array(
 		'nom' => 	array(
