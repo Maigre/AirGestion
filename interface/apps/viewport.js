@@ -15,7 +15,7 @@ function askAndDo (winID,controller)
 		});
 	}	
 
-function MenuItem() {
+function PanelItem() {
 		this.panel = null;
 		this.get = function(){return this.panel;};
 		this.load = function(){askAndDo(this.panel.id,this.panel.url);};
@@ -38,21 +38,21 @@ MainApp.ViewPort = {
 	
 	AppPort : null,
 
-	Menu_Accueil : new MenuItem(),
+	Menu_Accueil : new PanelItem(),
 
-	Menu_Adherents : new MenuItem(),
+	Menu_Adherents : new PanelItem(),
 	
-	Menu_Activites : new MenuItem(),
+	Menu_Activites : new PanelItem(),
 	
-	Menu_Clsh : new MenuItem(),
+	Menu_Clsh : new PanelItem(),
 	
-	Menu_Perisco : new MenuItem(),
+	Menu_Perisco : new PanelItem(),
 	
-	Menu_Paiements : new MenuItem(),
+	Menu_Paiements : new PanelItem(),
 
-	Menu_Config : new MenuItem(),
+	Menu_Config : new PanelItem(),
 	
-	Window_User : new MenuItem(),
+	Window_User : new PanelItem(),
 	
 	init : function() {
 	
@@ -136,7 +136,7 @@ MainApp.ViewPort = {
 					items:[this.Menu_Accueil.get(),this.Menu_Adherents.get(),this.Menu_Activites.get(),this.Menu_Clsh.get(),this.Menu_Perisco.get(),this.Menu_Paiements.get(),this.Menu_Config.get()]
 				}, {
 					region: 'center',
-					//layout: 'auto',
+					layout: 'absolute',
 					id: 'viewport_center_region'
 				}, {
 					region: 'south',
@@ -149,7 +149,7 @@ MainApp.ViewPort = {
 		
 		//this.AppPort.layout.regions.center.add(this.Window_User.get()); // using add()
         //this.Window_User.get().show();
-        //this.Menu_Adherents.load();
+        this.Menu_Adherents.load();
         
         //this.AppPort.endUpdate();  	
 	},
