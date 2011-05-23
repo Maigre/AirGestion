@@ -15,6 +15,3 @@ class Menu extends CI_Controller {
 		//$this->load->view('menu/adherent_familynew');
 	}
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */

@@ -21,7 +21,7 @@ class Search extends CI_Controller {
 			if (in_array($sign,array('<','<=','=','>=','>','<>','!='))) return $sign;
 			else return '=';
 		}
-
+		
 		//initialize answer array TODO(should be an array design to be JSON encoded)
 		$answer = array(
 					'size' 	=> 0,
@@ -30,7 +30,8 @@ class Search extends CI_Controller {
 
 		//initialize recieved vars from POST
 		$vars = array(
-			'name_search' 	=> 	$this->input->post('searched_name')
+			'name_search' 	=> 	''
+		
 		);
 		
 		//retrieve search argument from POST and sanitize (may be use CI methods to santize ?)
@@ -117,7 +118,7 @@ class Search extends CI_Controller {
 
 		//ORDER RESULTS
 		$ansT = null;
-		foreach($this->adherents->all as $a) 
+		foreach($this->adherents->all as $a)
 		{
 			//BUILD RANK BASED ON nom/prenom OR prenom/nom
 			if ($vars['name_search'] != '')
@@ -131,7 +132,7 @@ class Search extends CI_Controller {
 			//STORE INTO sorted array
 			$ansT[$p1][$a->nom.$a->prenom.$a->id] = $a;
 			
-		} 
+		}
 		
 		//PROCESS SORTED ARRAY
 		if (is_array($ansT)) 
@@ -156,7 +157,7 @@ class Search extends CI_Controller {
 					}
 					
 					//return ARRAY
-					$answer['adherent'][] =  $adh;
+					$answer['adherent'][] = $adh;
 				}
 			}
 			
@@ -168,8 +169,10 @@ class Search extends CI_Controller {
 			$answer['size'] = 0;
 			$answer['msg'] = 'aucun resultat...';
 		}
-		
 		//RETURN JSON !
+		/*$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode($answer));*/
 		echo json_encode($answer);
 	}
 }
