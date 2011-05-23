@@ -33,3 +33,23 @@
 .house{  
     background: url(../images/icons/house.png) no-repeat !important;  
 } 
+
+.key{  
+    background: url(../images/icons/key.png) no-repeat !important;  
+} 
+
+.color_swatch_2{  
+    background: url(../images/icons/color_swatch_2.png) no-repeat !important;  
+} 
+
+.arrow_left{  
+    background: url(../images/icons/arrow_left.png) no-repeat !important;  
+} 
+
+.arrow_right{  
+    background: url(../images/icons/arrow_right.png) no-repeat !important;  
+} 
+
+.arrow_redo{  
+    background: url(../images/icons/arrow_redo.png) no-repeat !important;  
+} 

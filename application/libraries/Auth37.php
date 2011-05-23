@@ -54,29 +54,52 @@ class Auth37 {
     
     public function login($user,$pass)
     {
-    	$CI =& get_instance();
-    	
-    	//check password from main_db 
-    	//and get user info & config
-    	$result = array(
-    					'level' 		=> 1,
-    					'password'		=> $CI->encrypt->sha1('pass')
-    					);
-    	
-    	if ($CI->encrypt->sha1($pass) == $result['password'])
+    	if (trim($user) != '')
     	{
-    		$this->user = $user;
-    		$this->level = $result['level'];
-			$this->logBit = true;
+			$CI =& get_instance();
 			
-			$CI->session->set_userdata('AUTH37_user',$this->user);
-			$CI->session->set_userdata('AUTH37_level',$this->level);
-			$CI->session->set_userdata('AUTH37_logbit',$this->logBit);
+			//check password from main_db 
+			//and get user info & config
+			$CI->db->where('user',$user);
+			$res = $CI->db->get('system_users',1);
 			
-    		return true;
-    	}
-    	else return false;
+			if ($res->num_rows() > 0)
+			{
+				$result = $res->row_array();
+			
+				if ($CI->encrypt->sha1($pass) == $result['password'])
+				{
+					$this->user = $user;
+					$this->level = $result['level'];
+					$this->logBit = true;
+			
+					$CI->session->set_userdata('AUTH37_user',$this->user);
+					$CI->session->set_userdata('AUTH37_level',$this->level);
+					$CI->session->set_userdata('AUTH37_logbit',$this->logBit);
+			
+					return true;
+				}
+			}
+		}
+		return false;
     }
+    
+    public function logout()
+    {
+		$CI =& get_instance();
+			
+		$this->user = '';
+		$this->level = 0;
+		$this->logBit = false;
+		
+		$CI->session->set_userdata('AUTH37_user',$this->user);
+		$CI->session->set_userdata('AUTH37_level',$this->level);
+		$CI->session->set_userdata('AUTH37_logbit',$this->logBit);
+		
+		$CI->session->sess_destroy();	
+		return ($this->logged() == 0);
+    }
+    
         
 }
 

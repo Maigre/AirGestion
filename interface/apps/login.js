@@ -14,16 +14,33 @@ MainApp.Login = {
 		    	var ans = Ext.JSON.decode(response.responseText);
 		    	if (ans.success) 
 		    	{
-		    		this.user = ans.user;		    		
+		    		MainApp.Login.user = ans.user;		    		
 		    		//Ext.Msg.alert('Identification', 'Bienvenue '+this.user+ ' !');
+		    		MainApp.ViewPort.start();
 				}
 				else MainApp.Login.login();  //launch login box
 		    },
 		    failure: function () {
-		    	Ext.Msg.alert('Identification', 'Zut, impossible de contacter le serveur .. ');
+		    	Ext.Msg.alert('Identification', 'Zut, impossible de contacter le serveur pour identification .. ');
 		    }
 		});
-	}, 
+	},
+	
+	//logout
+	logout : function() {		
+		//ask CI to log out
+		Ext.Ajax.request({
+		    url: BASE_URL+'auth/logout',
+		    success: function(response){
+		    	var ans = Ext.JSON.decode(response.responseText);
+		    	if (ans.success) Ext.Msg.alert('Deconnexion', 'A bientot '+this.user+ ' !',function(){this.user = null;MainApp.ViewPort.reload();});
+				else Ext.Msg.alert('Identification', ans.msg);  //erreur, redemarrez le navigateur
+		    },
+		    failure: function () {
+		    	Ext.Msg.alert('Deconnexion', 'Zut, impossible de contacter le serveur d\'identification .. ');
+		    }
+		});
+	},
 	
 	//display login window
 	login : function() {
@@ -53,10 +70,6 @@ MainApp.Login = {
 					name: 'password',
 					inputType: 'password',
 					allowBlank: false
-				}, {
-					xtype: 'hiddenfield',
-					name: 'action',
-					value: 'login'
 				}],
 
 				//Submit button
@@ -70,7 +83,7 @@ MainApp.Login = {
 							form.submit({
 								success: function(form, action) {
 									loginWindow.close();
-								   	MainApp.Login.user = action.result.user;
+								   	//MainApp.Login.user = action.result.user;
 								   	MainApp.Login.ask();
 								},
 								failure: function(form, action) {

@@ -52,7 +52,7 @@ MainApp.ViewPort = {
 
 	Menu_Config : new MenuItem(),
 	
-	Window_User : new MenuItem(),
+	Menu_User : new MenuItem(),
 	
 	init : function() {
 	
@@ -100,15 +100,12 @@ MainApp.ViewPort = {
 				iconCls: 'cog',
 				html: 'Menu Configuration...'
 			});
-		this.Window_User.panel = new Ext.Window({  
-					title: 'User form',
-					bodyStyle: 'padding:10px;background-color:#fff;',  
-					width:400,
-					height:400,
-					constrain: true
-			});
-		//this.Window_User.panel.show();
-		
+			
+		this.Menu_User.panel = new Ext.menu.Menu({
+				id: 'Menu_User-menu',
+				items: [{text:'Connexion',iconCls:'key',handler: function(){MainApp.Login.ask();}}]
+		});
+			
 	
 		this.AppPort = new Ext.Viewport({
 				id: 'MainApp-viewport',
@@ -118,13 +115,14 @@ MainApp.ViewPort = {
 					html: '<div id="title-img" style="float:right;padding:7px 50px"><img src="interface/images/airgestion-tr.png" alt="AirGestion!" height="45px" width="auto" /></div>',
 					bodyStyle: "background-image:url(interface/images/bck3.jpg)",
 					height: 56,
-					border: true,
+					border: false,
 				}, {
 					region: 'west',
 					width:200,
+					border: true,
 					defaults: {
 							// applied to each contained panel
-							bodyStyle: 'padding:10px'
+							bodyStyle: 'padding:5px'
 						},
 					layout: 'accordion',
 					layoutConfig: {
@@ -137,33 +135,59 @@ MainApp.ViewPort = {
 				}, {
 					region: 'center',
 					//layout: 'auto',
+					border: true,
 					id: 'viewport_center_region'
 				}, {
 					region: 'south',
 					html: '',
-					bodyStyle: "background-image:url(interface/images/bck3.jpg)",
-					height: 30
+					//bodyStyle: "background-image:url(interface/images/bck3.jpg)",
+					//height: 30,
+					border: false,
+					tbar: [
+						{xtype: 'tbfill'},
+						{
+							id: 'Menu_User-button',
+							text:'Utilisateur',
+							split: true,
+							iconCls:'color_swatch_2',
+							menu: this.Menu_User.get()
+						}
+						]
 				}]
 			});
+	},
+	
+	//called when login is validated
+	start: function () {
+		//load menu content
+		this.loadMenus();
 		
-		
-		//this.AppPort.layout.regions.center.add(this.Window_User.get()); // using add()
-        //this.Window_User.get().show();
-        //this.Menu_Adherents.load();
-        
-        //this.AppPort.endUpdate();  	
+		//change user toolbar
+		this.loadToolbar();
 	},
 	
 	loadMenus: function () {
 		//put here menu content loading (called after login check)
+		this.Menu_Adherents.load();
 		
 		//
 	},
 	
+	loadToolbar: function () {
+		//create user tollbar
+
+		Ext.getCmp('Menu_User-button').setText(MainApp.Login.user);
+		Ext.getCmp('Menu_User-menu').removeAll();
+		Ext.getCmp('Menu_User-menu').add([{                        
+                    text: 'Deconnexion',iconCls:'key',handler: function(){MainApp.Login.logout();}        
+            },{
+                	text: 'Redemarrer',iconCls:'arrow_redo',handler: function(){MainApp.ViewPort.reload();}
+            }]);
+	},
+	
 	reload: function() {
 		window.location.reload();
-	},
-		
+	}		
 }
 
 

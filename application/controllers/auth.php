@@ -2,7 +2,7 @@
 
 class Auth extends CI_Controller {
 
-	
+	//ASK if logged in or not, if ok send user and level
 	public function index()
 	{
 		if ($this->auth37->logged() > 0)
@@ -15,11 +15,21 @@ class Auth extends CI_Controller {
 		}
 	}
 	
+	//try to login
 	public function login()
 	{
 		$log = $this->auth37->login($this->input->post('login'),$this->input->post('password'));
 		
 		if ($log) echo "{success : true, user : \"".$this->auth37->user()."\"}";
-		else echo "{success : false, msg : \"Mauvais mot de passe !\"}";
+		else echo "{success : false, msg : \"Zut, impossible de vous identifier. Réessayez ! (attention au majuscules)\"}";
+	}
+	
+	//logout
+	public function logout()
+	{
+		$log = $this->auth37->logout();
+		
+		if ($log) echo "{success : true}";
+		else echo "{success : false, msg : \"Zut, impossible de vous déconnecter... Redémarrez votre navigateur internet !\"}";
 	}
 }
