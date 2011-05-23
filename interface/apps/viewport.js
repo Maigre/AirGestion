@@ -4,7 +4,7 @@ Ext.ns('MainApp');
 function askAndDo (winID,controller)
 	{	
 		Ext.Ajax.request({
-		    url: 'http://localhost/AirGestion/index.php/'+controller,
+		    url: BASE_URL+controller,
 		    method : 'POST',
 		    params : {
 		    	win: winID
@@ -115,9 +115,9 @@ MainApp.ViewPort = {
 				layout: 'border',
 				items: [{
 					region: 'north',
-					html: '<div id="title-img" style="padding:7px 50px"><img src="images/airgestion-tr.png" alt="AirGestion!" height="45px" width="auto" /></div>',
-					bodyStyle: "background-image:url(images/bck3.jpg)",
-					heiht: 200,
+					html: '<div id="title-img" style="float:right;padding:7px 50px"><img src="interface/images/airgestion-tr.png" alt="AirGestion!" height="45px" width="auto" /></div>',
+					bodyStyle: "background-image:url(interface/images/bck3.jpg)",
+					height: 56,
 					border: true,
 				}, {
 					region: 'west',
@@ -141,7 +141,7 @@ MainApp.ViewPort = {
 				}, {
 					region: 'south',
 					html: '',
-					bodyStyle: "background-image:url(images/bck3.jpg)",
+					bodyStyle: "background-image:url(interface/images/bck3.jpg)",
 					height: 30
 				}]
 			});
@@ -149,9 +149,15 @@ MainApp.ViewPort = {
 		
 		//this.AppPort.layout.regions.center.add(this.Window_User.get()); // using add()
         //this.Window_User.get().show();
-        this.Menu_Adherents.load();
+        //this.Menu_Adherents.load();
         
         //this.AppPort.endUpdate();  	
+	},
+	
+	loadMenus: function () {
+		//put here menu content loading (called after login check)
+		
+		//
 	},
 	
 	reload: function() {

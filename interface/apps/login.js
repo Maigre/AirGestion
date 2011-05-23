@@ -9,8 +9,7 @@ MainApp.Login = {
 	ask : function() {		
 		//ask CI which user is logged in		
 		Ext.Ajax.request({
-		    url: 'login.php',
-		    params: {action:'log'},
+		    url: BASE_URL+'auth/',
 		    success: function(response){
 		    	var ans = Ext.JSON.decode(response.responseText);
 		    	if (ans.success) 
@@ -18,7 +17,10 @@ MainApp.Login = {
 		    		this.user = ans.user;		    		
 		    		//Ext.Msg.alert('Identification', 'Bienvenue '+this.user+ ' !');
 				}
-				else MainApp.Login.login();
+				else MainApp.Login.login();  //launch login box
+		    },
+		    failure: function () {
+		    	Ext.Msg.alert('Identification', 'Zut, impossible de contacter le serveur .. ');
 		    }
 		});
 	}, 
@@ -32,7 +34,7 @@ MainApp.Login = {
 				width: 350,
 
 				// The form will submit an AJAX request to this URL when submitted
-				url: 'login.php',
+				url: BASE_URL+'auth/login/',
 				
 				// Fields will be arranged vertically, stretched to full width
 				layout: 'anchor',
