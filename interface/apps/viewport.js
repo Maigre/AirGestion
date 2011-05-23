@@ -51,12 +51,9 @@ MainApp.ViewPort = {
 	Menu_Paiements : new PanelItem(),
 
 	Menu_Config : new PanelItem(),
-	
-<<<<<<< HEAD
+ 
 	Menu_User : new MenuItem(),
-=======
-	Window_User : new PanelItem(),
->>>>>>> c47030a73dd3f6a502dce288611a97156818ca3f
+
 	
 	init : function() {
 	
