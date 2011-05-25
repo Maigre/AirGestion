@@ -10,7 +10,7 @@ function askAndDo (winID,controller)
 		    	win: winID
 		    },
 		    success: function(response){
-		    		Ext.get('working-area').update(response.responseText,true);
+		    		Ext.get('working-area').insertHtml('beforeBegin',response.responseText,true);
 		    }
 		});
 	}	
@@ -52,7 +52,7 @@ MainApp.ViewPort = {
 
 	Menu_Config : new PanelItem(),
  
-	Menu_User : new MenuItem(),
+	Menu_User : new PanelItem(),
 
 	
 	init : function() {

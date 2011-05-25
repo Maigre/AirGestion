@@ -146,12 +146,18 @@ Ext.override(Ext.form.Field, {
 			],
 			hideHeaders: true,
 			autoScroll: true,
-	        /*
+	        /*listeners: {
+				rowclick:{function(grid, rowIndex, e) {
+				  		alert('yo');
+				  		console.log('click el');
+					}
+				}
+			},
 	        viewConfig: 
 	        {
 	            forceFit:true
-	        },*/
- 			
+	        },
+ 			*/
  			listeners: {
 				click: {
 				    element: 'el', //bind to the underlying el property on the panel
@@ -180,8 +186,6 @@ Ext.override(Ext.form.Field, {
 		function(mygrid, rowIndex, e) {
 		showdialog(rowIndex, mygrid, mygrid.store, top, false, 'rowdblclick', bdate, ltime);
 	});*/
-
-  
 
 	createSearchForm();
 
