@@ -8,7 +8,7 @@ class C_adherent extends CI_Controller {
 	
 	}
 	
-	public function display($idAdherent,$statutadherent,$numeroenfant)
+	public function display($idAdherent,$statutadherent, $generaldetail, $numeroenfant)
 	{
 		$data['win']=$this->input->post('win');
 		//cherche dans la database l'adherent dont l'idée est fournie en argument
@@ -26,14 +26,17 @@ class C_adherent extends CI_Controller {
 		
 		//$data['run_adherent']=$this->run_adherent;
 		if ($statutadherent==1){
-			$this->load->view('MJC/referent',$data);
+			if ($generaldetail==0){$this->load->view('MJC/referent',$data);}
+			else {$this->load->view('MJC/referentdetail',$data);}
 		}
 		elseif ($statutadherent==2){
-			$this->load->view('MJC/conjoint',$data);
+			if ($generaldetail==0){$this->load->view('MJC/conjoint',$data);}
+			else {$this->load->view('MJC/conjointdetail',$data);}
 		}
 		elseif ($statutadherent==3){
 			$data['run_adherent']['numeroenfant']=$numeroenfant;
-			$this->load->view('MJC/enfant',$data);
+			if ($generaldetail==0){$this->load->view('MJC/enfant',$data);}
+			else {$this->load->view('MJC/enfantdetail',$data);}
 		}		
 	}
 }
