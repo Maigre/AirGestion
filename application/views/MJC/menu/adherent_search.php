@@ -75,6 +75,7 @@
 			click: {
 			    element: 'el', 
 			    fn: function(){ 
+			    	Ext.getCmp('viewport_center_region').removeAll();
 			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display');
 			    }
 			}

@@ -8,7 +8,7 @@ class C_famille extends CI_Controller {
 	
 	}
 	
-	public function display($idAdherent)
+	public function display($idAdherent=2)
 	{
 		$idAdherent=2;
 		$data['win']=$this->input->post('win');
