@@ -11,7 +11,7 @@ class Menu extends CI_Controller {
 	public function adherent()
 	{
 		$data['win']=$this->input->post('win');
-		$this->load->view('menu/adherent_search.php',$data);
+		$this->load->view('MJC/adherent_search.php',$data);
 		//$this->load->view('menu/adherent_familynew');
 	}
 }

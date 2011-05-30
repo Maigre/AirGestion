@@ -52,7 +52,7 @@ MainApp.ViewPort = {
 
 	Menu_Config : new PanelItem(),
  
-	Menu_User : new MenuItem(),
+	Menu_User : new PanelItem(),
 
 	
 	init : function() {
