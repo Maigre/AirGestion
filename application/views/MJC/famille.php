@@ -18,13 +18,14 @@ Window_Referent = {
 			this.Info_General.panel = new Ext.Panel({
 					id: 'Info_General_referent-panel',
 					title: 'Informations Generales',
-					
+					bodyStyle : 'padding: 5px',
 					layout: 'auto',
 					url: 'interface/c_adherent/display/<?=$referent['id']?>/1/0/0'
 			});
 			this.Info_Detail.panel = new Ext.Panel({
 					id: 'Info_Detail_referent-panel',
 					title: 'Détails',
+					bodyStyle : 'padding: 5px',
 					//iconCls: 'user',
 					layout: 'auto',
 					url: 'interface/c_adherent/display/<?=$referent['id']?>/1/1/0'
@@ -76,7 +77,7 @@ Window_Referent_form = {
 			msgTarget: 'side',
 			method: 'post',		
 			title: 'Famille',
-			url: 'php/form.php',
+			url: BASE_URL+'interface/c_adherent/save/<?=$referent['id']?>',
 			//width: 300,
 			//height: 300,
 			collapsible: true,
@@ -95,17 +96,18 @@ Window_Referent_form = {
 							name : "nom",
 							fieldLabel : "Nom",
 							allowBlank: false,
-							value:'Junior',
+							value:'Byles',
 							anchor:'96%'
 						},{
 							xtype:'textfield',
 							name : "prenom",
 							fieldLabel : "Pr&eacutenom",
-							value:'Byles',
+							value:'Junior',
 							anchor:'96%'
 						}, {
 							xtype: 'radiofield',
 							name: 'sexe',
+							inputValue: 'Femme',
 							//value: ,
 							fieldLabel: 'Sexe',
 							boxLabel: 'Femme',
@@ -113,7 +115,8 @@ Window_Referent_form = {
 						}, {
 							xtype: 'radiofield',
 							name: 'sexe',
-							//value: 'radiovalue2',
+							//value: 'on',
+							inputValue: 'Homme',
 							fieldLabel: '',
 							labelSeparator: '',
 							hideEmptyLabel: false,
@@ -240,17 +243,17 @@ Window_Referent_form = {
 				text: 'Reset',
 				handler: function()
 				{
-					formulaire.getForm().reset();
+					Ext.getCmp('Main_Panel_Referent_Form').getForm().reset();
 				}
 			},{
 				text: 'Submit',
 				handler: function()
 				{
-					formulaire.getForm().submit ({
+					Ext.getCmp('Main_Panel_Referent_Form').getForm().submit ({
 						success: function(form, action) {
 								Ext.Msg.alert('Success', action.result.msg);
 								console.info(windowindex);
-								windowarray[windowindex].remove(formulaire);
+								windowarray[windowindex].remove(Ext.getCmp('Main_Panel_Referent_Form'));
 								//using Ajax to insert the content
 								windowarray[windowindex].add(ficheadherentcreate());
 								//windowarray[windowindex].doLayout();
@@ -279,12 +282,14 @@ Window_Conjoint = {
 			this.Info_General.panel = new Ext.Panel({
 					id: 'Info_General_conjoint-panel',
 					title: 'Informations Generales',
+					bodyStyle : 'padding: 5px',
 					layout: 'auto',
 					url: 'interface/c_adherent/display/<?=$conjoint['id']?>/2/0/0'
 			});
 			this.Info_Detail.panel = new Ext.Panel({
 					id: 'Info_Detail_conjoint-panel',
 					title: 'Détails',
+					bodyStyle : 'padding: 5px',
 					layout: 'auto',
 					url: 'interface/c_adherent/display/<?=$conjoint['id']?>/2/1/0'
 			});
@@ -329,6 +334,7 @@ Window_Conjoint.init();
 			this.Info_General<?=$numero?>.panel = new Ext.Panel({
 				id: 'Info_General_enfant<?=$numero?>-panel',
 				title: 'Informations Generales',
+				bodyStyle : 'padding: 5px',
 				//html: 'Menu Adherents...',
 				layout: 'auto',
 				url: 'interface/c_adherent/display/<?=$enfant['id']?>/3/0/<?=$numero?>'
@@ -336,6 +342,7 @@ Window_Conjoint.init();
 			this.Info_Detail<?=$numero?>.panel = new Ext.Panel({
 				title: 'Détails',
 				id: 'Info_Detail_enfant<?=$numero?>-panel',
+				bodyStyle : 'padding: 5px',
 				//html: 'Menu Adherents...',
 				layout: 'auto',
 				url: 'interface/c_adherent/display/<?=$enfant['id']?>/3/1/<?=$numero?>'

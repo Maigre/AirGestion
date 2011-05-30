@@ -2,6 +2,7 @@
 
 var data<?=$run_adherent['numeroenfant']?> = {
         datenaissance: '<?=$run_adherent['datenaissance']?>',
+        age: '<?=calcul_age($run_adherent['datenaissance'])?>',
         fichesanitaire: '<?=$run_adherent['fichesanitaire']?>',
 		email: '<?=$run_adherent['email']?>' ,
 		telportable: '<?=$run_adherent['telportable']?>',
@@ -16,11 +17,13 @@ var data<?=$run_adherent['numeroenfant']?> = {
 
 var panel<?=$run_adherent['numeroenfant']?> = Ext.getCmp('Info_General_enfant<?=$run_adherent['numeroenfant']?>-panel'),
 tpl<?=$run_adherent['numeroenfant']?> = Ext.create('Ext.Template', 
-                            '<p>Date de naissance: {datenaissance:date("d M Y")}</p>',
-                            '<p>Fiche sanitaire: {fichesanitaire}</p>',
-                            '<p>Email: {email}</p>',
-                            '<p>Tel. portable: {telportable}</p>',
-                            '<p>Tel. domicile: {teldomicile}</p>'/*,
+                            '<table class="tableau_membre">',
+		                        '<TR><TD><b>{age} ans</b></TD><TD>{datenaissance:date("d/m/y")}</TD></TR>',
+		                        '<TR><TD>Email</TD><TD>{email}</TD></TR>',
+		                        '<TR><TD>Tel. portable</TD><TD>{telportable}</TD></TR>',
+		                        '<TR><TD>Tel. domicile</TD><TD>{teldomicile}</TD></TR>',
+		                        '<TR><TD>Fiche sanitaire</TD><TD>{fichesanitaire}</TD></TR>',
+                            '</table>'/*,
                             '<p>Sans viande sans porc: {sansviandesansporc}</p>',
                             '<p>Autorisation de sortie: {autorisationsortie}</p>',
                             '<p>N° sécu: {nosecu}</p>',
