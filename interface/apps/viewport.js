@@ -21,18 +21,6 @@ function PanelItem() {
 		this.load = function(){askAndDo(this.panel.id,this.panel.url);};
 	}
 	
-/*function windowcreate(){
-		var win = new Ext.Window({  
-					title: 'User form',
-					iconCls: 'user',  
-					bodyStyle: 'padding:10px;background-color:#fff;',  
-					width:400,
-					height:400, 
-					//items:[formcreate()],
-					layout: 'fit' 
-				});
-		return win;
-	}*/
 
 MainApp.ViewPort = {
 	

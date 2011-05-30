@@ -2,7 +2,7 @@
 
 class Csp extends Dmc {
 	
-	var $has_many=array("adherents");
+	var $has_many=array("adherent");
 
 	var $description = array(
 		'nom' => 	array(

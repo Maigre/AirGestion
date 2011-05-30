@@ -8,7 +8,7 @@ class C_adherent extends CI_Controller {
 	
 	}
 	
-	public function display($idAdherent,$statutadherent,$numeroenfant)
+	public function display($idAdherent,$statutadherent, $generaldetail, $numeroenfant)
 	{
 		$data['win']=$this->input->post('win');
 		//cherche dans la database l'adherent dont l'idée est fournie en argument
@@ -23,17 +23,72 @@ class C_adherent extends CI_Controller {
 		$data['run_adherent']['nom']=$this->run_adherent->nom;
 		$data['run_adherent']['prenom']=$this->run_adherent->prenom;
 		$data['run_adherent']['id']=$this->run_adherent->id;
+		$data['run_adherent']['datenaissance']=$this->run_adherent->datenaissance;
+		$data['run_adherent']['fichesanitaire']=$this->run_adherent->fichesanitaire;
+		$data['run_adherent']['email']=$this->run_adherent->email;
+		$data['run_adherent']['telportable']=$this->run_adherent->telportable;
+		$data['run_adherent']['teldomicile']=$this->run_adherent->teldomicile;
+		$data['run_adherent']['telprofessionel']=$this->run_adherent->telprofessionel;
+		$data['run_adherent']['sansviandesansporc']=$this->run_adherent->sansviandesansporc;
+		$data['run_adherent']['autorisationsortie']=$this->run_adherent->autorisationsortie;
+		$data['run_adherent']['allocataire']=$this->run_adherent->allocataire;
+		$data['run_adherent']['employeur']=$this->run_adherent->employeur;
+		$data['run_adherent']['noallocataire']=$this->run_adherent->noallocataire;
+		$data['run_adherent']['nosecu']=$this->run_adherent->nosecu;
+		$data['run_adherent']['csp']=$this->run_adherent->csp;
+		$data['run_adherent']['situationfamiliale']=$this->run_adherent->situationfamiliale;		
 		
 		//$data['run_adherent']=$this->run_adherent;
 		if ($statutadherent==1){
-			$this->load->view('MJC/referent',$data);
+			if ($generaldetail==0){$this->load->view('MJC/referent',$data);}
+			else {$this->load->view('MJC/referentdetail',$data);}
 		}
 		elseif ($statutadherent==2){
-			$this->load->view('MJC/conjoint',$data);
+			if ($generaldetail==0){$this->load->view('MJC/conjoint',$data);}
+			else {$this->load->view('MJC/conjointdetail',$data);}
 		}
 		elseif ($statutadherent==3){
 			$data['run_adherent']['numeroenfant']=$numeroenfant;
-			$this->load->view('MJC/enfant',$data);
+			if ($generaldetail==0){$this->load->view('MJC/enfant',$data);}
+			else {$this->load->view('MJC/enfantdetail',$data);}
 		}		
 	}
+	
+	public function save($idAdherent){
+	
+		
+		$this->load->model('MJC/adherent','run_adherent');
+		$u = $this->run_adherent;
+		
+		
+		$array = array('id' => $idAdherent);
+		$u->where($array)->get();
+		
+		// Change fields value
+		// Fetching Form Values
+		/*$u->sexe = $_POST['sexe'];
+		$u->datenaissance = $_POST['datenaissance'];
+		$u->fichesanitaire = $_POST['fichesanitaire'];*/
+		$u->nom = $this->input->post('nom');
+		$u->prenom = $this->input->post('prenom');
+		$u->email = $this->input->post('email');/*
+		$u->telportable = $_POST['telportable'];
+		$u->teldomicile = $_POST['teldomicile'];
+		$u->telprofessionel = $_POST['telprofessionel'];
+		$u->sansviandesansporc = $_POST['sansviandesansporc'];
+		$u->autorisationsortie = $_POST['autorisationsortie'];
+		$u->allocataire = $_POST['allocataire'];
+		$u->employeur = $_POST['employeur'];
+		$u->noallocataire = $_POST['noallocataire'];
+		$u->nosecu = $_POST['nosecu'];
+
+		$csp = new Csp();
+		$csp->where('nom', $_POST['csp'])->get();
+
+		*/
+		// Save changes to existing adherent
+		$u->save(/*array($csp)*/); 
+		
+	}
+	
 }
