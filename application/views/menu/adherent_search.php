@@ -162,9 +162,8 @@ Ext.override(Ext.form.Field, {
 				click: {
 				    element: 'el', //bind to the underlying el property on the panel
 				    fn: function(){ 
-				    	console.log('click el');
-				    	Ext.getCmp('viewport_center_region').removeAll();
-				    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display');//'display/1');
+				    	console.info('click el');
+				    	MainApp.ViewPort.AppPort.layout.regions.center.removeAll();	    	
 				    }
 				},
 				dblclick: {

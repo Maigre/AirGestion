@@ -8,9 +8,8 @@ class C_famille extends CI_Controller {
 	
 	}
 	
-	public function display($idAdherent)
+	public function display($idAdherent=2)
 	{
-		$idAdherent=2;
 		$data['win']=$this->input->post('win');
 		//trouver id famille correspondante et envoyer à la vue 
 		//l'id de tous les membres de la famille classé par statut: referent, conjoint et enfants
