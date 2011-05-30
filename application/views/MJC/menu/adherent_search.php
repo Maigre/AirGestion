@@ -42,11 +42,11 @@
 	// ----------------
 
 	ds = new Ext.data.Store({
- 			fields: ['prenom','nom'],
+ 			fields: ['id','prenom','nom'],
  			autoLoad: true,
  			proxy: {
 				type: 'ajax',
-				url: BASE_URL+'data/search/adherent',  // url that will load data with respect to start and limit params
+				url: BASE_URL+'data/search/adherent/',  // url that will load data with respect to start and limit params
 			    actionMethods : {read: 'POST'},
 				reader : {
 			    	type : 'json',
@@ -66,24 +66,22 @@
     {
         store: ds, // use the datasource
 		columns: [
-			{header: 'Nom', dataIndex: 'nom',flex:1, sortable: true},
-			{header: 'Prenom',  dataIndex: 'prenom',  sortable: true}
+			{dataIndex: 'nom', flex:1, sortable: true},
+			{dataIndex: 'prenom',  sortable: true},
+			{dataIndex: 'id',  hidden: true}
 		],
 		hideHeaders: true,
 		autoScroll: true,
 		listeners: {
-			click: {
-			    element: 'el', 
-			    fn: function(){ 
+			itemclick: function(g,i){ 
 			    	Ext.getCmp('viewport_center_region').removeAll();
-			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display');
-			    }
+			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+i.data.id);
 			}
 		},
 		stripeRows:true,
         autoHeight:true 
     });
-
+	
     Ext.getCmp('<?=$win?>').add(searchgrid);	
  
 </script>

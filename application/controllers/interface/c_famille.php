@@ -8,7 +8,7 @@ class C_famille extends CI_Controller {
 	
 	}
 	
-	public function display($idAdherent=2)
+	public function display($idAdherent)
 	{
 		$data['win']=$this->input->post('win');
 		//trouver id famille correspondante et envoyer à la vue 
