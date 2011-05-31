@@ -74,7 +74,7 @@
 		autoScroll: true,
 		listeners: {
 			itemclick: function(g,i){ 
-			    	Ext.getCmp('viewport_center_region').removeAll();
+			    	MainApp.ViewPort.AppPort.layout.regions.center.removeAll();
 			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+i.data.id);
 			}
 		},

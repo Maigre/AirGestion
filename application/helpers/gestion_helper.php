@@ -9,8 +9,16 @@ function calcul_age($date_naissance){
 	return $age;
 }
 
+function date_disp($dateSQL){
+	
+	$date = strtotime($dateSQL);
+	if ($date>0) return date('d/m/y',$date);
+	else return null;
+}
 
-
+function icon($class){
+	return '<img class="x-panel-header-icon '.$class.'" src="interface/ext4/resources/s.gif" alt="" />';
+}
 
 /* End of file gestion_helper.php */
 /* Location: ./application/helpers/gestion_helper.php */

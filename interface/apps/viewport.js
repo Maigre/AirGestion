@@ -123,7 +123,7 @@ MainApp.ViewPort = {
 					items:[this.Menu_Accueil.get(),this.Menu_Adherents.get(),this.Menu_Activites.get(),this.Menu_Clsh.get(),this.Menu_Perisco.get(),this.Menu_Paiements.get(),this.Menu_Config.get()]
 				}, {
 					region: 'center',
-					layout: 'absolute',
+					layout: {type : 'table', columns : 2},
 					border: true,
 					id: 'viewport_center_region'
 				}, {
