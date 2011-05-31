@@ -32,8 +32,8 @@ Window_Referent = {
 			});
 			this.Main_Panel.panel = new Ext.Panel({  
 						id: 'Main_Panel_Referent',
-						x:margin,
-						y:margin,
+						//x:margin,
+						//y:margin,
 						height: height_value,
 						width: width_value,
 						title: '<?=$referent['nom']?> - Référent',
@@ -45,13 +45,15 @@ Window_Referent = {
 								   type: 'next',
 								   handler: function(){
 									   Ext.getCmp('viewport_center_region').removeAll();
+									   //Ext.getCmp('Main_Panel_Referent').setAutoHeight(true);
+									   //Ext.getCmp('Main_Panel_Referent').setAutoWidth(true);
 									   //Ext.getCmp('Main_Panel_Referent').close();
 									   Window_Referent_form.init();
 							   		}
 							   	}]
 			});
 		
-			Ext.getCmp('<?=$win?>').add(this.Main_Panel.get());
+			Ext.getCmp('viewport_center_region').add(this.Main_Panel.get());
 			this.Info_General.load();
 			this.Info_Detail.load();
 		}
@@ -64,7 +66,24 @@ Window_Referent_form = {
 	Main_Panel : new Ext.Panel,
 	
 	init : function() {
-	
+		
+		//load the data to populate the form
+		adherent_data = new Ext.data.Store({
+ 			fields: ['nom','prenom','id','datenaissance','fichesanitaire','email','telportable','teldomicile','telprofessionel','sansviandesansporc','autorisationsortie','allocataire','employeur','noallocataire','nosecu','csp','situationfamiliale'],
+ 			autoLoad: true,
+ 			proxy: {
+				type: 'ajax',
+				url: BASE_URL+'interface/c_adherent/load/<?=$referent['id']?>',  // url that will load data
+			    actionMethods : {read: 'POST'},
+				reader : {
+			    	type : 'json',
+					totalProperty: 'size',
+					root: 'adherent'
+				}
+			}          			
+		});
+		adherent_data.load;
+
 		this.Main_Panel.panel = new Ext.FormPanel
 		({
 			id : 'Main_Panel_Referent_Form',
@@ -78,8 +97,8 @@ Window_Referent_form = {
 			method: 'post',		
 			title: 'Famille',
 			url: BASE_URL+'interface/c_adherent/save/<?=$referent['id']?>',
-			//width: 300,
-			//height: 300,
+			autoHeight: true,
+			autoWidth: true,
 			collapsible: true,
 		
 			items:[{
@@ -253,9 +272,9 @@ Window_Referent_form = {
 						success: function(form, action) {
 								Ext.Msg.alert('Success', action.result.msg);
 								console.info(windowindex);
-								windowarray[windowindex].remove(Ext.getCmp('Main_Panel_Referent_Form'));
+								//windowarray[windowindex].remove(Ext.getCmp('Main_Panel_Referent_Form'));
 								//using Ajax to insert the content
-								windowarray[windowindex].add(ficheadherentcreate());
+								//windowarray[windowindex].add(ficheadherentcreate());
 								//windowarray[windowindex].doLayout();
 						},		
 						failure: function(form, action) {
@@ -265,7 +284,13 @@ Window_Referent_form = {
 				}
 			}]
 		});
-		Ext.getCmp('<?=$win?>').add(Ext.getCmp('Main_Panel_Referent_Form'));
+		//adherent_data.load();
+		adherent_data.on('load', function () {
+			var rec= adherent_data.getAt(0);
+			Ext.getCmp('Main_Panel_Referent_Form').getForm().loadRecord(rec);
+		});
+		Ext.getCmp('viewport_center_region').add(Ext.getCmp('Main_Panel_Referent_Form'));
+		Ext.getCmp('Main_Panel_Referent_Form').doLayout();
 	}
 }
 
@@ -295,10 +320,12 @@ Window_Conjoint = {
 			});
 			this.Main_Panel.panel = new Ext.Panel({  
 						id: 'Main_Panel_Conjoint',
-						x:(2*margin+width_value),
-						y:margin,
+						//x:(2*margin+width_value),
+						//y:margin,
 						height: height_value,
 						width: width_value,
+						//autoHeight: height_value,
+						//autoWidth : width_value,
 						title: '<?=$conjoint['nom']?> - Conjoint',
 						iconCls: '<?php if ($conjoint['sexe']==0) echo 'user'; else echo 'user_female';?>',
 						constrain: true,
@@ -336,7 +363,9 @@ Window_Conjoint.init();
 				title: 'Informations Generales',
 				bodyStyle : 'padding: 5px',
 				//html: 'Menu Adherents...',
-				layout: 'auto',
+				//layout: 'auto',
+				//autoHeight: true,
+				//autoWidth: true,
 				url: 'interface/c_adherent/display/<?=$enfant['id']?>/3/0/<?=$numero?>'
 			});
 			this.Info_Detail<?=$numero?>.panel = new Ext.Panel({
@@ -344,16 +373,20 @@ Window_Conjoint.init();
 				id: 'Info_Detail_enfant<?=$numero?>-panel',
 				bodyStyle : 'padding: 5px',
 				//html: 'Menu Adherents...',
-				layout: 'auto',
+				//layout: 'auto',
+				//autoHeight: true,
+				//autoWidth: true,
 				url: 'interface/c_adherent/display/<?=$enfant['id']?>/3/1/<?=$numero?>'
 			});
 			this.Main_Panel<?=$numero?>.panel = new Ext.Panel({  
 				title: '<?=$enfant['nom']?> - Enfant <?=$numero?>',
 				id: 'Main_Panel_Enfant<?=$numero?>',
-				x: (margin+<?=$numero?>*(width_value+margin)),
-				y: (2*margin+height_value),
+				//x: (margin+<?=$numero?>*(width_value+margin)),
+				//y: (2*margin+height_value),
 				height: height_value,
 				width: width_value,
+				//autoHeight: height_value,
+				//autoWidth : width_value,
 				iconCls: '<?php if ($enfant['sexe']==0) echo 'user'; else echo 'user_female';?>',
 				constrain: true,
 				layout: 'accordion',
