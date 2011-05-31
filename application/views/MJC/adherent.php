@@ -34,7 +34,8 @@ MainApp.Content = {
                             	'<TR><TD>N° sécu</TD><TD><?=$adherent->nosecu?></TD></TR>'+
                             '</table>'
                      });
-                     
+        
+        Ext.getCmp('<?=$win?>').removeAll();             
 		Ext.getCmp('<?=$win?>').add(this.Info_Panel_<?=$adherent->id?>.get());
 		Ext.getCmp('<?=$win?>').setTitle('<?=$adherent->prenom.' '.$adherent->nom.' - '.calcul_age($adherent->datenaissance).' ans'?>');
 		<?php if ($adherent->sexe == 1): ?> 
