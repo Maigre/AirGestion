@@ -1,9 +1,21 @@
+.add{  
+    background: url(../images/icons/add.png) no-repeat !important;  
+} 
+
+.cancel{  
+    background: url(../images/icons/cancel.png) no-repeat !important;  
+} 
+
 .user{  
     background: url(../images/icons/user.png) no-repeat !important;  
 } 
 
 .user_female{  
     background: url(../images/icons/user_female.png) no-repeat !important;  
+} 
+
+.group{  
+    background: url(../images/icons/group.png) no-repeat !important;  
 } 
 
 .cake{  

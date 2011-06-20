@@ -2,6 +2,7 @@
 
 class C_adherent extends CI_Controller {
 
+	private $idNewadherent;
 	
 	public function index()
 	{
@@ -11,6 +12,17 @@ class C_adherent extends CI_Controller {
 	public function display($idAdherent)
 	{
 		$data['win']=$this->input->post('win');
+		if ($idAdherent==0){
+			//get the new family id
+			$this->load->model('MJC/famille','run_famille');
+			$famille = $this->run_famille;
+			$famille->order_by("id", "desc")->limit(1)->get();
+			//find the related adherent
+			$this->load->model('MJC/adherent','run_adherent');
+			$u = $this->run_adherent;
+			$u->where_related_famille('id',$famille->id)->get();
+			$idAdherent=$u->id;
+		}
 		
 		$this->load->model('MJC/adherent','adherent');
 		$this->adherent->where('id', $idAdherent)->get();
@@ -22,52 +34,143 @@ class C_adherent extends CI_Controller {
 	public function form($idAdherent)
 	{
 		$data['win']=$this->input->post('win');
-		
 		$this->load->model('MJC/adherent','adherent');
-		$this->adherent->where('id', $idAdherent)->get();
+		if ($idAdherent!=0){
+			$this->adherent->where('id', $idAdherent)->get();
+		}
+		else{
+			$this->adherent->id=0;
+		}
 		
 		$data['adherent'] = $this->adherent;
 		$this->load->view('MJC/adherent_form',$data);
 	}
 	
-	public function save($idAdherent){
+	public function save($idAdherent, $statutAdherent=1, $idFamille=null){
 	
 		
 		$this->load->model('MJC/adherent','run_adherent');
 		$u = $this->run_adherent;
-		
 		
 		$array = array('id' => $idAdherent);
 		$u->where($array)->get();
 		
 		// Change fields value
 		// Fetching Form Values
-		foreach ($_POST as $field=>$value){
-			$u->$field = $value;//reste à formater certains champs.
+		foreach ($u->description as $field=>$data){
+			$value=$this->input->post($field);
+			if (isset($value) and ($field!='csp') and ($field!='situationfamiliale')){
+				$u->$field=$value;
+			} 
 		}
-		/*
-		$u->sexe = $_POST['sexe'];
-		$u->datenaissance = $_POST['datenaissance'];
-		$u->fichesanitaire = $_POST['fichesanitaire'];
-		$u->nom = $this->input->post('nom');
-		$u->prenom = $this->input->post('prenom');
-		$u->email = $this->input->post('email');
-		$u->telportable = $_POST['telportable'];
-		$u->teldomicile = $_POST['teldomicile'];
-		$u->telprofessionel = $_POST['telprofessionel'];
-		$u->sansviandesansporc = $_POST['sansviandesansporc'];
-		$u->autorisationsortie = $_POST['autorisationsortie'];
-		$u->allocataire = $_POST['allocataire'];
-		$u->employeur = $_POST['employeur'];
-		$u->noallocataire = $_POST['noallocataire'];
-		$u->nosecu = $_POST['nosecu'];
+			
+		/*foreach ($_POST as $field=>$value){
+			
+			if (($field!='csp') AND ($field!='situationfamiliale')){
+				$u->$field = $value;//reste à formater certains champs.
+			}
+		}
+		*/
+		
+		//formattage des dates
+		if ($u->datenaissance!=0){
+			$dateexplode = explode('/',$u->datenaissance);
+			$datenaissance = $dateexplode[2].'-'.$dateexplode[1].'-'.$dateexplode[0];
+			$datenaissance= date("Y-m-d", strtotime($datenaissance));
+			$u->datenaissance = $datenaissance;
+		}
+		else{
+			$u->datenaissance = '';
+		}
+		
+		//formattage des booleens
+		$boolean_data= array('allocataire','fichesanitaire','sansviandesansporc','autorisationsortie');
+		foreach($boolean_data as $nom_data){
+			
+			if($u->$nom_data=='on') {
+					$u->$nom_data=1;
+				}
+			else{
+				$u->$nom_data=0;
+			}
+		}
 
-//		$csp = new Csp();
-//		$csp->where('nom', $_POST['csp'])->get();*/
+		//Tableau des champs liés
+		$related_fields= array();
+		
+		if (isset($_POST['csp'])){
+			$csp = new Csp();
+			$csp->where('nom', $_POST['csp'])->get();
+			$related_fields[]=$csp;
+		}
+		
+		if (isset($_POST['situationfamiliale'])){
+			$situationfamiliale = new Situationfamiliale();
+			$situationfamiliale->where('nom', $_POST['situationfamiliale'])->get();
+			$related_fields[]=$situationfamiliale;
+		}
+		
+		
+		$this->load->model('MJC/statutadherent','run_statutadherent');
+		$statutadherent = $this->run_statutadherent;
+		
+		$this->load->model('MJC/famille','run_famille');
+		$famille = $this->run_famille;
+			
+		////////////////////
+		//Case of new family and new referent
+		if ($idAdherent==0){
+			//verification des données du formulaire adherent
+			
+			//save the new family (data has been saved in session in c_famille/save())
+			//If new referent then also new family
+			if ($statutAdherent==1){
+				$datafamille=$this->session->userdata('famille');
+				//print_r($datafamille);
+				foreach($datafamille as $field=>$value){
+					if ($field!='groupe'){
+					$famille->$field = $value;//reste à formater certains champs.
+					}
+				}
 
-
-		// Save changes to existing adherent
-		$u->save(/*array($csp)*/); 
+				if (isset($_POST['groupe'])){
+					$groupe = new Groupe();
+					$groupe->where('nom', $_POST['groupe'])->get();
+					// Save changes to existing family
+					$famille->save(array($groupe));
+				}
+				else{
+					$famille->save();
+				}
+				//send the famille id to the adherent form_data
+				$answer['idfamille'] = $famille->id;
+				//relate to the statut referent(id=1)
+				$statutadherent->where("id", 1)->get();
+			}
+			else{//new conjoint or kid
+				$famille->where("id", $idFamille)->get();
+				$statutadherent->where("id", $statutAdherent)->get();
+			}
+			//to relate the new adherent to the new famille
+			$related_fields[]=$famille;
+			$related_fields[]=$statutadherent;
+		}
+		/////////////////
+		
+		// Save
+		
+		$u->save($related_fields);
+		
+		//case new conjoint or kid send the id to the new_adherent() function.
+		if ($idAdherent==0){
+			$this->idNewadherent=$u->id;
+		}
+		$answer['success'] = true;
+		$answer['test']= 'yeah';
+  		
+  		echo json_encode($answer);
+  		
+  		
 		
 	}
 	
@@ -77,25 +180,46 @@ class C_adherent extends CI_Controller {
 		$u = $this->run_adherent;
 		$array = array('id' => $idAdherent);
 		$u->where($array)->get();
+		//formating data
+		$boolean_data= array('allocataire','fichesanitaire','sansviandesansporc','autorisationsortie');
+		foreach($boolean_data as $nom_data){
+			if($u->$nom_data==1) {
+					$u->$nom_data='on';
+				}
+			else{
+				$u->$nom_data='off';
+			}
+		}
+		/*	
+		if($u->sansviandesansporc==1) {
+				$u->sansviandesansporc=true;
+			}
+		else{
+			$u->sansviandesansporc=false;
+		}*/
+		
+		$u->csp->get();
+		$u->situationfamiliale->get();
 		
 		$data = array(
-			'nom'=>$this->run_adherent->nom,
+			'nom'=>$u->nom,
 			'prenom'=>$this->run_adherent->prenom,
-			'id'=>$this->run_adherent->id,
-			'datenaissance'=>$this->run_adherent->datenaissance,
-			'fichesanitaire'=>$this->run_adherent->fichesanitaire,
-			'email'=>$this->run_adherent->email,
-			'telportable'=>$this->run_adherent->telportable,
-			'teldomicile'=>$this->run_adherent->teldomicile,
-			'telprofessionel'=>$this->run_adherent->telprofessionel,
-			'sansviandesansporc'=>$this->run_adherent->sansviandesansporc,
-			'autorisationsortie'=>$this->run_adherent->autorisationsortie,
-			'allocataire'=>$this->run_adherent->allocataire,
-			'employeur'=>$this->run_adherent->employeur,
-			'noallocataire'=>$this->run_adherent->noallocataire,
-			'nosecu'=>$this->run_adherent->nosecu
-			//'csp'=>$this->run_adherent->csp,
-			//'situationfamiliale'=>$this->run_adherent->situationfamiliale,
+			'id'=>$u->id,
+			'sexe'=>$u->sexe,
+			'datenaissance'=>$u->datenaissance,
+			'fichesanitaire'=>$u->fichesanitaire,
+			'email'=>$u->email,
+			'telportable'=>$u->telportable,
+			'teldomicile'=>$u->teldomicile,
+			'telprofessionel'=>$u->telprofessionel,
+			'sansviandesansporc'=>$u->sansviandesansporc,
+			'autorisationsortie'=>$u->autorisationsortie,
+			'allocataire'=>$u->allocataire,
+			'employeur'=>$u->employeur,
+			'noallocataire'=>$u->noallocataire,
+			'nosecu'=>$u->nosecu,
+			'csp'=>$u->csp->nom,
+			'situationfamiliale'=>$u->situationfamiliale->nom
 			//'title'=>'G-Force',
 		);  
   		//print_r($data); die;
@@ -104,5 +228,25 @@ class C_adherent extends CI_Controller {
   		$answer['success'] = true;
         
         echo json_encode($answer);  
-    }  
-}
+    }
+    
+    public function new_adherent($statutAdherent, $idFamille){
+    	$this->save(0, $statutAdherent, $idFamille);
+    	$this->load->model('process','process');
+		$this->process->display($idFamille,$this->idNewadherent);
+    }
+    
+    public function comboboxload($nomtable){
+		$nomtable=ucword(strtolower($nom));
+		$situationfamiliale = new $nomtable();
+		$situationfamiliale->get();
+		foreach($situationfamiliale->all as $situation){
+			$data[]=$situation->nom;
+		}
+		 
+  		//print_r($data); die;
+  		$answer['combobox']=$data;
+  		$answer['size'] = count($answer['combobox']);
+  		$answer['success'] = true;		
+	}  
+}//relate to the statut referent(id=1)

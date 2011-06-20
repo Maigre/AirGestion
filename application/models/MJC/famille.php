@@ -6,20 +6,6 @@ class Famille extends Dmc {
 	var $has_many=array("adherent");
 
 	var $description = array(
-		'nomreferent' => array(
-				'label' 	=> array('Nom du référent'),
-				'rules' 	=> array('xss_clean'),
-				'defval'	=> '',
-				'type'		=> 'virtual',
-				'formfield' 	=> array('text', 40)
-		),
-		'prenomreferent' => array(
-				'label' 	=> array('Nom du référent'),
-				'rules' 	=> array('xss_clean'),
-				'defval'	=> '',
-				'type'		=> 'virtual',
-				'formfield' 	=> array('text', 40)
-		),		
 		'adresse1' => 	array(
 				'label' 	=> array('Adresse n°1'),
 				'rules' 	=> array('xss_clean'),

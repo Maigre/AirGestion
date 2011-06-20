@@ -143,11 +143,14 @@ class Search extends CI_Controller {
 				ksort($list); //sort by nom.prenom.id
 				foreach($list as $a) 
 				{
+					$a->famille->get();
+					
 					$adh = null;
 					
 					$adh['prenom'] = $a->prenom;
 					$adh['nom'] = $a->nom;
 					$adh['id'] = $a->id;
+					$adh['idfamille'] = $a->famille->id;
 					
 					//strong up identified piece of string
 					if ($vars['name_search'] != '')
