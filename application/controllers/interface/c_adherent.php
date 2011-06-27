@@ -63,14 +63,6 @@ class C_adherent extends CI_Controller {
 				$u->$field=$value;
 			} 
 		}
-			
-		/*foreach ($_POST as $field=>$value){
-			
-			if (($field!='csp') AND ($field!='situationfamiliale')){
-				$u->$field = $value;//reste à formater certains champs.
-			}
-		}
-		*/
 		
 		//formattage des dates
 		if ($u->datenaissance!=0){
@@ -166,12 +158,7 @@ class C_adherent extends CI_Controller {
 			$this->idNewadherent=$u->id;
 		}
 		$answer['success'] = true;
-		$answer['test']= 'yeah';
-  		
   		echo json_encode($answer);
-  		
-  		
-		
 	}
 	
 	public function load($idAdherent){
@@ -222,7 +209,12 @@ class C_adherent extends CI_Controller {
 			'situationfamiliale'=>$u->situationfamiliale->nom
 			//'title'=>'G-Force',
 		);  
-  		//print_r($data); die;
+  		//enlève les champs nuls
+  		foreach ($data as $field=>$value){
+  			if ($value=="0"){
+  				$data[$field]='';
+  			}
+  		}
   		$answer['adherent']=$data;
   		$answer['size'] = count($answer['adherent']);
   		$answer['success'] = true;
@@ -235,6 +227,30 @@ class C_adherent extends CI_Controller {
     	$this->load->model('process','process');
 		$this->process->display($idFamille,$this->idNewadherent);
     }
+    
+    public function delete($idAdherent){
+    	$this->load->model('MJC/adherent','run_adherent');
+		$u = $this->run_adherent;
+		$u->where('id', $idAdherent)->get();
+		//array of related fields (HAS_ONE)
+		$related_table=array('famille','csp','situationfamiliale','statutadherent');
+		foreach ($related_table as $field){
+			$u->$field->get();
+			$field=$u->famille;
+			$links_to_delete[]=$field;
+		}
+		$u->delete($links_to_delete);
+	}
+	
+	public function relate_adherent_to_famille($idFamille, $idAdherent){
+		$this->load->model('MJC/adherent','adherent');
+		$a = $this->adherent;
+		$a->where('id', $idAdherent)->get();
+		$this->load->model('MJC/famille','famille');
+		$f = $this->famille;
+		$f->where('id', $idFamille)->get();
+		$a->save($f);
+	}
     
     public function comboboxload($nomtable){
 		$nomtable=ucword(strtolower($nom));

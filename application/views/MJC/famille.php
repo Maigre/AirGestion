@@ -11,6 +11,9 @@ MainApp.Content = {
 	
 	family_bar : new PanelItem(),
 	
+	//Adherent_double_famille : new PanelItem(),
+	//doublefamilleWindow : new PanelItem(),
+	
 	width : 200,
 	height_adults : 210,
 	height_kids : 150,
@@ -48,18 +51,13 @@ MainApp.Content = {
 								   handler: function(e,f,g){
 									   g.ownerCt.url = 'interface/c_famille/form/'+f_id;
 									   g.ownerCt.him.load();
-									   //this.ownerCt.ownerCt.parent.load();
-									   //console.info(this.ownerCt.ownerCt);
-									   //Ext.getCmp('Main_Panel_Referent').setAutoHeight(true);
-									   //Ext.getCmp('Main_Panel_Referent').setAutoWidth(true);
-									   //Ext.getCmp('Main_Panel_Referent').close();
-									  // Window_Referent_form.init();
 							   		}
 							   	}]
 			});
 	},
 	
 	addMember : function (w_id,a_id,himself) {
+			
 		return new Ext.Panel({  
 						id: w_id,
 						him: himself,
@@ -86,32 +84,155 @@ MainApp.Content = {
 								   handler: function(e,f,g){
 									   g.ownerCt.url = 'interface/c_adherent/form/'+a_id;
 									   g.ownerCt.him.load();
-									   //this.ownerCt.ownerCt.parent.load();
-									   //console.info(this.ownerCt.ownerCt);
-									   //Ext.getCmp('Main_Panel_Referent').setAutoHeight(true);
-									   //Ext.getCmp('Main_Panel_Referent').setAutoWidth(true);
-									   //Ext.getCmp('Main_Panel_Referent').close();
-									  // Window_Referent_form.init();
 							   		}
+							   	},
+							   	{
+								   type: 'close',
+								   handler: function(e,f,g){
+									   	Ext.Msg.show({
+											title: 'Alerte',
+											msg: 'Voulez-vous vraiment supprimer cet adhérent?',
+											width: 300,
+											buttons: Ext.Msg.YESNO,
+											//multiline: true,
+											fn: function(btn,f,g,h){
+												console.info(btn);
+												if (btn == 'yes'){
+													Ext.getCmp(w_id).ownerCt.url = 'interface/c_adherent/delete/'+a_id;
+													Ext.getCmp(w_id).ownerCt.remove(Ext.getCmp(w_id));
+												}
+											},
+											animateTarget: false,
+											icon: Ext.window.MessageBox.INFO
+										});
+							   		}
+							   	},
+							   	{
+								 	type: 'pin',
+								 	tooltip: 'Refresh form Data',
+									handler: function(e,f,g){
+																				
+										// ----------------
+										//	Create searchform
+										// ----------------	
+										//The formfield is where the user types in the name. On each stroke, the input will be given to the datastore. 
+										this.searchfield = new Ext.FormPanel({
+											id: 'searchform',
+											layout: 'fit',
+											bodyStyle: 'margin:5px',
+											height: 30,
+											items: [
+												{
+													xtype: 'textfield',
+													fieldLabel: '',
+													name: 'searched_name',
+													allowBlank:true,
+													enableKeyEvents: true,
+				
+													listeners: 
+													{
+														keyup: function(el) {ds.load({params: {name_search: el.getValue()}});}
+													}
+												}
+											]	
+										});
+
+									 
+										// ----------------
+										//	Create datasource
+										// ----------------
+
+										ds = new Ext.data.Store({
+									 			fields: ['id','prenom','nom','idfamille'],
+									 			autoLoad: true,
+									 			proxy: {
+													type: 'ajax',
+													url: BASE_URL+'data/search/adherent/',  // url that will load data with respect to start and limit params
+													actionMethods : {read: 'POST'},
+													reader : {
+														type : 'json',
+														totalProperty: 'size',
+														root: 'adherent'
+													}
+												}          			
+											});				
+	
+									  
+									 
+										// ----------------
+										//	Create grid
+										// ----------------	
+
+										this.searchgrid = new Ext.grid.GridPanel(
+										{
+											id: 'searchgrid',
+											store: ds, // use the datasource
+											columns: [
+												{dataIndex: 'nom', flex:1, sortable: true},
+												{dataIndex: 'prenom',  sortable: true},
+												{dataIndex: 'id',  hidden: true},
+												{dataIndex: 'idfamille',  hidden: true}
+											],
+											hideHeaders: true,
+											autoScroll: true,
+											listeners: {
+												itemclick: function(g,i){ 
+														askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_adherent/relate_adherent_to_famille/'+i.data.idfamille+'/'+a_id);			    	
+														Ext.getCmp('doublefamilleWindow').close();
+														Ext.Msg.alert('Info', 'L\'enfant a été relié avec succès à une deuxième famille.');
+												}
+											},
+											stripeRows:true,
+											autoHeight:true 
+										});	
+	
+										Adherent_double_famille = new Ext.Panel({
+												id : 'Adherent_double_famille-panel',
+												width: 500,
+												buttonAlign: 'center',
+												defaults: {anchor: '100%'},
+												defaultType: 'textfield',
+												frame : true,
+												labelAlign : "top",
+												msgTarget: 'side',
+												method: 'post',		
+												url: BASE_URL+'interface/c_adherent/save',
+												items:[this.searchfield,this.searchgrid],
+												modal: true
+										});
+	
+										doublefamilleWindow = new Ext.Window({
+													id: 'doublefamilleWindow',
+													title: 'Sélectionner une deuxième famille',
+													width: 240,
+													layout: 'fit',
+													modal: true,
+													closable: true,
+													resizable: true,
+													items: [Adherent_double_famille],
+													url: BASE_URL+'interface/c_adherent/save/1'
+												});
+										//this.createWindowDoubleFamille();
+										Ext.getCmp('doublefamilleWindow').show();
+									}
 							   	}]
 			});
 	},
 	
 	make : function () {
 		
-		//Ext.getCmp('<?=$win?>').removeAll();
 		Ext.getCmp('Region_famille').removeAll();
 		Ext.getCmp('Region_parent').removeAll();
-		Ext.getCmp('Region_enfant1').removeAll();
-		Ext.getCmp('Region_enfant2').removeAll();
-		
-		
-		
+		<?php for ($i=1; $i<=4; $i++){ ?>
+			Ext.getCmp('Region_enfant<?=$i?>').removeAll();
+		<?php } ?>
+				
 		this.Famille.panel = this.addFamilypanel('Famille-panel','<?=$famille?>',this.Famille);
 		this.Famille.load();
 		Ext.getCmp('Region_famille').add(this.Famille.get());
 		
 		this.Referent.panel = this.addMember('Content_Referent-panel','<?=$referent?>',this.Referent);
+		this.Referent.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le référent
 		this.Referent.load();
 		Ext.getCmp('Region_parent').add(this.Referent.get());
 		<?php if (isset($conjoint)): ?> 
@@ -120,7 +241,7 @@ MainApp.Content = {
 			<?php if ($isnewconjoint): ?>
 				this.Conjoint.panel.url = 'interface/c_adherent/form/<?=$conjoint?>',
 			<?php endif; ?>
-			
+			this.Conjoint.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le conjoint
 			this.Conjoint.load();
 			Ext.getCmp('Region_parent').add(this.Conjoint.get());
 		<?php endif; ?>

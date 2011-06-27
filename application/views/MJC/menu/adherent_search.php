@@ -93,7 +93,7 @@
 		autoScroll: true,
 		listeners: {
 			itemclick: function(g,i){ 
-			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+i.data.idfamille);			    	
+			    	askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+i.data.idfamille+'/'+i.data.id);			    	
 			}
 		},
 		stripeRows:true,

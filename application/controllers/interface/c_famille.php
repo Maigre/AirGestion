@@ -21,10 +21,11 @@ class C_famille extends CI_Controller {
 		$this->load->view('MJC/famille_display',$data);
 	}
 	
-	public function display($idFamille=0)
+	public function display($idFamille=0,$idAdherent=0)
 	{
+		//test unicité famille
 		$this->load->model('process','process');
-		$this->process->display($idFamille);
+		$this->process->display($idFamille,$idAdherent);
 	}
 	
 	public function form($idFamille)
@@ -64,8 +65,8 @@ class C_famille extends CI_Controller {
 		foreach($boolean_data as $nom_data){
 			
 			if($u->$nom_data=='on') {
-					$u->$nom_data=1;
-				}
+				$u->$nom_data=1;
+			}
 			else{
 				$u->$nom_data=0;
 			}
@@ -75,12 +76,9 @@ class C_famille extends CI_Controller {
 			foreach ($u->description as $id=>$field){
 				$field=$this->input->post($id);
 				if (isset($field)){
-					//echo 'okc_famille';
 					$newdata['famille'][$id]=$field;
 				} 
 			}
-			//$newdata['famille'] = $this->input->post();
-			//print_r($newdata['famille']);die;
 			$this->session->set_userdata($newdata);
 			$answer['success'] = true;
 		}
@@ -132,8 +130,7 @@ class C_famille extends CI_Controller {
 			'sansviandesansporc'=>$u->sansviandesansporc,
 			'autorisationsortie'=>$u->autorisationsortie,
 			'groupe'=>$u->groupe->nom
-		);  
-  		//print_r($data); die;
+		);
   		$answer['adherent']=$data;
   		$answer['size'] = count($answer['adherent']);
   		$answer['success'] = true;
