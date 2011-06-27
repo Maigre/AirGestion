@@ -23,7 +23,31 @@ class C_adherent extends CI_Controller {
 			$u->where_related_famille('id',$famille->id)->get();
 			$idAdherent=$u->id;
 		}
-		
+		else{
+			//test unicité de la famille
+			$this->load->model('MJC/famille','famille');
+			$this->famille->where_related_adherent('id', $idAdherent)->select('id')->get();
+			$number_family=0;
+			foreach($this->famille as $famille){
+				$number_family=$number_family+1;
+			}
+			//TODO : demande quelle famille si il y en a plusieurs !!
+			if ($number_family>1){
+				$data['double_famille']=true;
+				//get all referents
+				foreach($this->famille as $famille){
+					$famille->adherent->select('id, nom, prenom')->get();
+					foreach($famille->adherent->all as $adh)
+					{
+						//referent
+						if ($adh->statutadherent->id == 1){
+							$data['referent'][]=$adh->prenom.' '.$adh->nom;
+						}
+					}				
+				} 
+			}
+			else $data['double_famille']=false;
+		}
 		$this->load->model('MJC/adherent','adherent');
 		$this->adherent->where('id', $idAdherent)->get();
 		

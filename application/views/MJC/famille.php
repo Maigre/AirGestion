@@ -111,7 +111,6 @@ MainApp.Content = {
 								 	type: 'pin',
 								 	tooltip: 'Refresh form Data',
 									handler: function(e,f,g){
-																				
 										// ----------------
 										//	Create searchform
 										// ----------------	
@@ -128,7 +127,7 @@ MainApp.Content = {
 													name: 'searched_name',
 													allowBlank:true,
 													enableKeyEvents: true,
-				
+			
 													listeners: 
 													{
 														keyup: function(el) {ds.load({params: {name_search: el.getValue()}});}
@@ -155,8 +154,8 @@ MainApp.Content = {
 														root: 'adherent'
 													}
 												}          			
-											});				
-	
+										});				
+
 									  
 									 
 										// ----------------
@@ -185,7 +184,7 @@ MainApp.Content = {
 											stripeRows:true,
 											autoHeight:true 
 										});	
-	
+
 										Adherent_double_famille = new Ext.Panel({
 												id : 'Adherent_double_famille-panel',
 												width: 500,
@@ -200,7 +199,7 @@ MainApp.Content = {
 												items:[this.searchfield,this.searchgrid],
 												modal: true
 										});
-	
+
 										doublefamilleWindow = new Ext.Window({
 													id: 'doublefamilleWindow',
 													title: 'Sélectionner une deuxième famille',
@@ -213,7 +212,24 @@ MainApp.Content = {
 													url: BASE_URL+'interface/c_adherent/save/1'
 												});
 										//this.createWindowDoubleFamille();
-										Ext.getCmp('doublefamilleWindow').show();
+										if (this.ownerCt.ownerCt.items.items[0].referent1 !=''){
+												Ext.Msg.show({
+													title: 'Alerte',
+													msg: 'Cet enfant est déjà relié à '+this.ownerCt.ownerCt.items.items[0].referent1+' et à '+this.ownerCt.ownerCt.items.items[0].referent2+'. Souhaitez-vous le rattacher à une troisième famille?',
+													width: 300,
+													buttons: Ext.Msg.YESNO,
+													//multiline: true,
+													fn: function(btn,f,g,h){
+														if (btn == 'yes'){
+															Ext.getCmp('doublefamilleWindow').show();
+														}
+													},
+													animateTarget: false,
+													icon: Ext.window.MessageBox.INFO
+												});
+										}
+										else Ext.getCmp('doublefamilleWindow').show();
+										
 									}
 							   	}]
 			});

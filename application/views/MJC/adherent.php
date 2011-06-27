@@ -8,6 +8,8 @@ MainApp.Content = {
 		
 		this.Info_Panel_<?=$adherent->id?>.panel = new Ext.Panel({  
 						id: 'Info_Adherent_<?=$adherent->id?>-panel',
+						referent1: '<?php if ($double_famille) : echo $referent[0]; endif; ?>',
+						referent2: '<?=($double_famille)?$referent[1]:''?>',
 						bodyStyle: 'padding:5px',
 						border: 0,
 						html: '<table class="tableau_membre">'+

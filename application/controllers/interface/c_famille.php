@@ -23,7 +23,6 @@ class C_famille extends CI_Controller {
 	
 	public function display($idFamille=0,$idAdherent=0)
 	{
-		//test unicité famille
 		$this->load->model('process','process');
 		$this->process->display($idFamille,$idAdherent);
 	}
