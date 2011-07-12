@@ -308,14 +308,18 @@ MainApp.Content = {
 		    title: 'Famille <?=$nom?>',
 		    id: 'family_bar',
 		    iconCls: 'group',
-		    tbar: [{
+		    tbar: [
+		    <?php if (!isset($conjoint)): ?> 
+		    {
 		        text: 'Conjoint',
 		        iconCls: 'add',
 		        scale: 'small',
 		        handler: function() {
 					askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_adherent/new_adherent/2/<?=$famille?>');
 				} 
-		    },{
+		    },
+		    <?php endif; ?>
+		    {
 		        text: 'Enfant',
 		        iconCls: 'add',
 		        scale: 'small',
