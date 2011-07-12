@@ -21,10 +21,10 @@ class C_famille extends CI_Controller {
 		$this->load->view('MJC/famille_display',$data);
 	}
 	
-	public function display($idFamille=0,$idAdherent=0)
+	public function display($idFamille=0,$idAdherent=0,$idNewAdherent=0)
 	{
 		$this->load->model('process','process');
-		$this->process->display($idFamille,$idAdherent);
+		$this->process->display($idFamille,$idAdherent,$idNewAdherent);
 	}
 	
 	public function form($idFamille)
@@ -133,9 +133,25 @@ class C_famille extends CI_Controller {
   		$answer['adherent']=$data;
   		$answer['size'] = count($answer['adherent']);
   		$answer['success'] = true;
-        
         echo json_encode($answer);  
-    }
+	}
+
+	public function delete($idFamille){
+    		$this->load->model('MJC/famille','run_famille');
+		$u = $this->run_famille;
+		$u->where('id', $idFamille)->get();
+		//array of related fields
+		$related_table=array('adherent','groupe');
+
+		foreach ($related_table as $field){
+			$u->$field->get();
+			$field=$u->$field;
+			$links_to_delete[]=$field;
+		}
+		$u->adherent->delete_all();
+		$u->delete($links_to_delete);
+		$u->delete();		
+    	}
 	
 	
 }

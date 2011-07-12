@@ -2,7 +2,7 @@
 
 class Process extends CI_Model
 {
-	public function display($idFamille=0, $idAdherent=0)
+	public function display($idFamille=0, $idAdherent=0, $idNewAdherent=0)
 	{
 		$data['win']=$this->input->post('win');
 		
@@ -52,7 +52,7 @@ class Process extends CI_Model
 					//conjoint
 					else if ($adh->statutadherent->id == 2){
 						$data['conjoint'] = $adh->id;
-						if($idAdherent==$adh->id){//$idAdherent est ici l'id d'un nouvel adherent
+						if($idNewAdherent==$adh->id){
 							$data['isnewconjoint']=true;
 						}
 						else $data['isnewconjoint']=false;
@@ -60,7 +60,7 @@ class Process extends CI_Model
 					//enfants
 					else{
 						$data['enfants'][] = $adh->id;
-						if($idAdherent==$adh->id){//$idAdherent est ici l'id d'un nouvel adherent
+						if($idNewAdherent==$adh->id){
 							$data['isnewkid'][]=true;
 						}
 						else $data['isnewkid'][]=false;
@@ -77,4 +77,5 @@ class Process extends CI_Model
 			$this->load->view('MJC/famille',$data);
 		}
 	}	
+	
 }

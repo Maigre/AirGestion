@@ -18,7 +18,6 @@ MainApp.Content = {
 	height_adults : 210,
 	height_kids : 150,
 	margin : 5,
-	
 	// ----------------
 	//	Create family buttons bar
 	// ----------------	
@@ -51,6 +50,32 @@ MainApp.Content = {
 								   handler: function(e,f,g){
 									   g.ownerCt.url = 'interface/c_famille/form/'+f_id;
 									   g.ownerCt.him.load();
+							   		}
+							   	},
+							   	{
+								   type: 'close',
+								   handler: function(e,f,g){
+									   	Ext.Msg.show({
+											title: 'Alerte',
+											msg: 'Voulez-vous vraiment supprimer cette famille?',
+											width: 300,
+											buttons: Ext.Msg.YESNO,
+											//multiline: true,
+											fn: function(btn,f,g,h){
+												console.info(btn);
+												if (btn == 'yes'){
+													Ext.getCmp(w_id).url = 'interface/c_famille/delete/'+f_id;
+													Ext.getCmp(w_id).him.load();
+													Ext.getCmp('Region_famille').removeAll();
+													Ext.getCmp('Region_parent').removeAll();
+													<?php for ($i=1; $i<=4; $i++){ ?>
+														Ext.getCmp('Region_enfant<?=$i?>').removeAll();
+													<?php } ?>
+												}
+											},
+											animateTarget: false,
+											icon: Ext.window.MessageBox.INFO
+										});
 							   		}
 							   	}]
 			});
@@ -98,7 +123,8 @@ MainApp.Content = {
 											fn: function(btn,f,g,h){
 												console.info(btn);
 												if (btn == 'yes'){
-													Ext.getCmp(w_id).ownerCt.url = 'interface/c_adherent/delete/'+a_id;
+													Ext.getCmp(w_id).url = 'interface/c_adherent/delete/'+a_id;						
+													Ext.getCmp(w_id).him.load();													
 													Ext.getCmp(w_id).ownerCt.remove(Ext.getCmp(w_id));
 												}
 											},
@@ -283,10 +309,6 @@ MainApp.Content = {
 		    id: 'family_bar',
 		    iconCls: 'group',
 		    tbar: [{
-		        text: 'Famille',
-		        iconCls: 'cancel',
-		        scale: 'small'
-		    },{
 		        text: 'Conjoint',
 		        iconCls: 'add',
 		        scale: 'small',
@@ -307,4 +329,5 @@ MainApp.Content = {
 	}
 }
 MainApp.Content.make();
+console.info('ok');
 </script>

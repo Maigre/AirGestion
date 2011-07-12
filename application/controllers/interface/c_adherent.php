@@ -249,7 +249,7 @@ class C_adherent extends CI_Controller {
     public function new_adherent($statutAdherent, $idFamille){
     	$this->save(0, $statutAdherent, $idFamille);
     	$this->load->model('process','process');
-		$this->process->display($idFamille,$this->idNewadherent);
+		$this->process->display($idFamille,$this->idNewadherent,$this->idNewadherent);
     }
     
     public function delete($idAdherent){
@@ -264,6 +264,7 @@ class C_adherent extends CI_Controller {
 			$links_to_delete[]=$field;
 		}
 		$u->delete($links_to_delete);
+		$u->delete();
 	}
 	
 	public function relate_adherent_to_famille($idFamille, $idAdherent){
@@ -283,8 +284,6 @@ class C_adherent extends CI_Controller {
 		foreach($situationfamiliale->all as $situation){
 			$data[]=$situation->nom;
 		}
-		 
-  		//print_r($data); die;
   		$answer['combobox']=$data;
   		$answer['size'] = count($answer['combobox']);
   		$answer['success'] = true;		
