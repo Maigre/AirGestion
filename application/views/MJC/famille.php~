@@ -18,6 +18,7 @@ MainApp.Content = {
 	height_adults : 210,
 	height_kids : 150,
 	margin : 5,
+	=kj
 	// ----------------
 	//	Create family buttons bar
 	// ----------------	
@@ -57,7 +58,7 @@ MainApp.Content = {
 								   handler: function(e,f,g){
 									   	Ext.Msg.show({
 											title: 'Alerte',
-											msg: 'Voulez-vous vraiment supprimer cette famille et tous ses adhérents?',
+											msg: 'Voulez-vous vraiment supprimer cette famille?',
 											width: 300,
 											buttons: Ext.Msg.YESNO,
 											//multiline: true,
@@ -66,11 +67,7 @@ MainApp.Content = {
 												if (btn == 'yes'){
 													Ext.getCmp(w_id).url = 'interface/c_famille/delete/'+f_id;
 													Ext.getCmp(w_id).him.load();
-													Ext.getCmp('Region_famille').removeAll();
-													Ext.getCmp('Region_parent').removeAll();
-													<?php for ($i=1; $i<=4; $i++){ ?>
-														Ext.getCmp('Region_enfant<?=$i?>').removeAll();
-													<?php } ?>
+													Ext.getCmp(w_id).ownerCt.ownerCt.removeAll();
 												}
 											},
 											animateTarget: false,
@@ -275,7 +272,6 @@ MainApp.Content = {
 		
 		this.Referent.panel = this.addMember('Content_Referent-panel','<?=$referent?>',this.Referent);
 		this.Referent.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le référent
-		this.Referent.panel.tools[1].hidden = true; //désactiver la supression d'un adhérent, elle se fait par supression de sa famille
 		this.Referent.load();
 		Ext.getCmp('Region_parent').add(this.Referent.get());
 		<?php if (isset($conjoint)): ?> 
@@ -309,18 +305,18 @@ MainApp.Content = {
 		    title: 'Famille <?=$nom?>',
 		    id: 'family_bar',
 		    iconCls: 'group',
-		    tbar: [
-		    <?php if (!isset($conjoint)): ?> 
-		    {
+		    tbar: [{
+		        text: 'Famille',
+		        iconCls: 'cancel',
+		        scale: 'small'
+		    },{
 		        text: 'Conjoint',
 		        iconCls: 'add',
 		        scale: 'small',
 		        handler: function() {
 					askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_adherent/new_adherent/2/<?=$famille?>');
 				} 
-		    },
-		    <?php endif; ?>
-		    {
+		    },{
 		        text: 'Enfant',
 		        iconCls: 'add',
 		        scale: 'small',
@@ -334,5 +330,4 @@ MainApp.Content = {
 	}
 }
 MainApp.Content.make();
-console.info('ok');
 </script>

@@ -2,7 +2,7 @@
 
 class Groupe extends Dmc {
 	
-	var $has_many=array("familles");
+	var $has_many=array("famille");
 	
 	var $description = array(
 		'nom' => 	array(

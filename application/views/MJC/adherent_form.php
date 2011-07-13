@@ -8,9 +8,64 @@ MainApp.Content = {
 	//build the form
 	make_form_<?=$adherent->id?> : function () {
 		
+		var comboboxstore_situationfamiliale = new Ext.data.Store({
+ 			id: 'store_combobox_situation_familiale',
+ 			fields: [{name: "name"}],
+ 			autoLoad: true,
+ 			proxy: {
+				type: 'ajax',
+				url: BASE_URL+'data/formprocess/comboboxload/situationfamiliale',  // url that will load data
+			    actionMethods : {read: 'POST'},
+				reader : {
+			    	type : 'json',
+					totalProperty: 'size',
+					root: 'combobox'
+				}
+			}          			
+		});
+		this.combobox_situationfamiliale = new Ext.form.ComboBox ({
+			fieldLabel: 'Situation familiale',
+ 			name: "situationfamiliale",
+			store: comboboxstore_situationfamiliale,
+			queryMode: 'remote',
+			displayField: 'name',
+			valueField: 'name',
+			anchor: '96%'
+		});
+		
+		var comboboxstore_csp = new Ext.data.Store({
+ 			id: 'store_combobox_csp',
+ 			fields: [{name: "name"}],
+ 			autoLoad: true,
+ 			proxy: {
+				type: 'ajax',
+				url: BASE_URL+'data/formprocess/comboboxload/csp',  // url that will load data
+			    actionMethods : {read: 'POST'},
+				reader : {
+			    	type : 'json',
+					totalProperty: 'size',
+					root: 'combobox'
+				}
+			}          			
+		});
+		this.combobox_csp = new Ext.form.ComboBox ({
+			fieldLabel: 'CSP',
+ 			name: "csp",
+			store: comboboxstore_csp,
+			queryMode: 'remote',
+			displayField: 'name',
+			valueField: 'name',
+			anchor: '96%'
+		});
+		
+		
 		//load the data to populate the form
 		this.Form_Data_<?=$adherent->id?> = new Ext.data.Store({
- 			fields: ['nom','prenom','id','datenaissance','fichesanitaire','email','telportable','teldomicile','telprofessionel','sansviandesansporc','autorisationsortie','allocataire','employeur','noallocataire','nosecu','csp','situationfamiliale'],
+ 			id: 'form_data',
+ 			fields: ['nom','prenom','id',
+ 					{name : 'datenaissance',
+ 					type : 'date'},
+ 					'fichesanitaire','email','telportable','teldomicile','telprofessionel','sansviandesansporc','autorisationsortie','allocataire','employeur','noallocataire','nosecu','csp','situationfamiliale'],
  			autoLoad: true,
  			proxy: {
 				type: 'ajax',
@@ -23,7 +78,9 @@ MainApp.Content = {
 				}
 			}          			
 		});
-		this.Form_Data_<?=$adherent->id?>.load();
+		<?php if ($adherent->id!=0):?>
+			this.Form_Data_<?=$adherent->id?>.load();
+		<?php endif ?>
 		
 		//create the form panel
 		this.Form_Adherent_<?=$adherent->id?>.panel = new Ext.FormPanel
@@ -61,10 +118,18 @@ MainApp.Content = {
 							fieldLabel : "Pr&eacutenom",
 							value:'Junior',
 							anchor:'96%'
-						}, {
+						}/*,{
+							  xtype: 'radiogroup',
+							  fieldLabel: 'Sexe',
+							  name: 'sexe',
+							  items: [
+								   {boxLabel: 'Femme', name: 'sexe', inputValue: 1},
+								   {boxLabel: 'Homme', name: 'sexe', inputValue: 0}
+							  ]
+						}*/,{
 							xtype: 'radiofield',
 							name: 'sexe',
-							inputValue: 'Femme',
+							inputValue: "1",
 							//value: ,
 							fieldLabel: 'Sexe',
 							boxLabel: 'Femme',
@@ -73,7 +138,7 @@ MainApp.Content = {
 							xtype: 'radiofield',
 							name: 'sexe',
 							//value: 'on',
-							inputValue: 'Homme',
+							inputValue: "0",
 							fieldLabel: '',
 							labelSeparator: '',
 							hideEmptyLabel: false,
@@ -83,12 +148,6 @@ MainApp.Content = {
 							xtype: 'datefield',
 							name : "datenaissance",
 							fieldLabel : "Date de naissance",
-							value:'Byles',
-							anchor:'96%'
-						},{
-							xtype: 'textfield',
-							name : "fichesanitaire",
-							fieldLabel : "Fiche sanitaire",
 							value:'Byles',
 							anchor:'96%'
 						},{
@@ -102,7 +161,7 @@ MainApp.Content = {
 							xtype: 'textfield',
 							name : "telportable",
 							fieldLabel : "Tel. portable",
-							value:'0635268053',
+							value:'',
 							minLength: 10,
 							maxLength: 10,
 							hideTrigger: true,
@@ -110,12 +169,12 @@ MainApp.Content = {
 							mouseWheelEnabled: false,
 							anchor:'96%'
 
-						},{
+						}<?php if ($adherent->statutadherent->id <= 2): ?>
+						,{
 							xtype: 'textfield',
 							name : "teldomicile",
 							fieldLabel : "Tel. domicile",
-							value:'0635268053',
-							minLength: 10,
+							value:'',
 							maxLength: 10,
 							hideTrigger: true,
 							keyNavEnabled: false,
@@ -126,15 +185,16 @@ MainApp.Content = {
 							xtype: 'textfield',
 							name : "telprofessionel",
 							fieldLabel : "Tel. pro",
-							value:'0635268053',
-							minLength: 10,
+							value:'',
 							maxLength: 10,
 							hideTrigger: true,
 							keyNavEnabled: false,
 							mouseWheelEnabled: false,
 							anchor:'96%'
 
-						}]
+						}
+						<?php endif; ?>
+						]
 						},{
 						xtype: 'container',
 					    columnWidth:0.5,
@@ -144,55 +204,62 @@ MainApp.Content = {
 							name : "sansviandesansporc",
 							fieldLabel : "Sans Viande Sans Porc",
 							value:'Oui',
-							anchor:'100%'
-						},{
+							anchor:'96%'
+						}<?php if ($adherent->statutadherent->id > 2): ?>
+						,{
 							xtype:'checkboxfield',
 							name : "autorisationsortie",
 							fieldLabel : "Autorisation de Sortie",
 							value: false,
 							anchor:'100%'
-						},{
+						}<?php endif; ?>
+						,{
+							xtype:'checkboxfield',
+							name : "fichesanitaire",
+							fieldLabel : "Fiche sanitaire",
+							value: false,
+							anchor:'100%'
+						}
+						<?php if ($adherent->statutadherent->id <= 2): ?>
+						,{
 							xtype:'checkboxfield',
 							name : "allocataire",
 							fieldLabel : "Allocataire",
-							//value:'',
+							value: false,
 							anchor:'100%'
 						},{
 							xtype:'textfield',
 							name : "employeur",
 							fieldLabel : "Employeur",
 							value:'John',
-							anchor:'100%'
+							anchor:'96%'
 						},{
 							xtype: 'numberfield',
 							name : "noallocataire",
 							fieldLabel : "N&deg allocataire",
-							value:'4675849',
+							value:'',
 							hideTrigger: true,
 							keyNavEnabled: false,
 							mouseWheelEnabled: false,
-							anchor:'100%'
-						},{
+							anchor:'96%'
+						}
+						<?php endif; ?>
+						,{
 							xtype: 'numberfield',
 							name : "nosecu",
 							fieldLabel : "N&deg s&eacutecu",
-							value:'185126544010229',
-							minLength: 15,
+							value:'',
+							//minLength: 15,
 							maxLength: 15,
 							hideTrigger: true,
 							keyNavEnabled: false,
 							mouseWheelEnabled: false,
-							anchor:'100%'
-						},{
-							xtype:'textfield',
-							name : "csp",
-							fieldLabel : "CSP",
-							value:'klj',
-							hideTrigger: true,
-							keyNavEnabled: false,
-							mouseWheelEnabled: false,
-							anchor:'100%'
+							anchor:'96%'
 						}
+						<?php if ($adherent->statutadherent->id <= 2): ?>
+						,this.combobox_situationfamiliale,
+						this.combobox_csp
+						<?php endif; ?>
 						]}]}],
 	
 			buttons:
@@ -206,15 +273,25 @@ MainApp.Content = {
 				text: 'Submit',
 				handler: function()
 				{
+					<?php if ($adherent->id==0):?> //Création d'un nouvel adherent lance sauvegarde famille
+									Ext.getCmp('Form_Famille-panel').submit();
+					<?php endif ?>
+					
 					this.ownerCt.ownerCt.getForm().submit ({
+						
+						
 						success: function(form, action) {
+								<?php if ($adherent->id==0):?>
+									askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+action.result.idfamille);
+								<?php endif ?>
 								Ext.Msg.alert('Success', action.result.msg);
-								console.info(windowindex);
-								//windowarray[windowindex].remove(Ext.getCmp('Main_Panel_Referent_Form'));
-								//using Ajax to insert the content
-								//windowarray[windowindex].add(ficheadherentcreate());
-								//windowarray[windowindex].doLayout();
-						},		
+								this.form.owner.ownerCt.url = 'interface/c_adherent/display/'+<?=$adherent->id?>,
+							   	this.form.owner.ownerCt.him.load();
+								console.info(this.form.owner.ownerCt);
+								//this.form.owner.ownerCt.doLayout();
+								
+								//console.info(windowindex);
+						},
 						failure: function(form, action) {
 						   Ext.Msg.alert('Failure', "An error occured, please try again later.");
 						}
@@ -222,10 +299,14 @@ MainApp.Content = {
 				}
 			}]
 		});
-		
-		this.Form_Data_<?=$adherent->id?>.on('load', function () {
-			var rec= this.Form_Data_<?=$adherent->id?>.getAt(0);
-			this.Form_Adherent_<?=$adherent->id?>.panel.getForm().loadRecord(rec);
+		/*
+		this.comboboxstore.on('load', function (datastore) {
+			var rec= datastore.getAt(0);
+		});
+		*/
+		this.Form_Data_<?=$adherent->id?>.on('load', function (datastore) {
+			var rec= datastore.getAt(0);
+			Ext.getCmp('Form_Adherent_<?=$adherent->id?>-panel').getForm().loadRecord(rec);
 		});
         
         Ext.getCmp('<?=$win?>').removeAll();             

@@ -332,6 +332,18 @@ class CI_DB_driver {
 
 			return FALSE;
 		}
+		//Si la requête a fonctionnée on l'écrit dans la table historique 		
+		else{
+			//on vérifie que la requête correspond bien à une modification de la database (i.e la requête commence par INSERT, UPDATE ou DELETE)
+			$premieres_lettres= substr($sql, 0, 6);
+			if ((($premieres_lettres=='INSERT') OR ($premieres_lettres=='UPDATE') OR ($premieres_lettres=='DELETE')) AND (!stristr($sql,"system_sessions"))){
+				$date= now();
+				$requete= "INSERT INTO `historique` VALUES (null,\"".$sql."\",'".$date."')"; 
+				//$this->load->database();
+				$this->simple_query($requete);
+				//echo $requete; die;
+			}
+		}
 
 		// Stop and aggregate the query time results
 		$time_end = list($em, $es) = explode(' ', microtime());

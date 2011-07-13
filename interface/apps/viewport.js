@@ -41,10 +41,19 @@ MainApp.ViewPort = {
 	Menu_Config : new PanelItem(),
  
 	Menu_User : new PanelItem(),
-
+	
+	Region_famille : new PanelItem(),
+	Region_parent : new PanelItem(),
+	Region_enfant1 : new PanelItem(),
+	Region_enfant2 : new PanelItem(),
+	Region_enfant3 : new PanelItem(),
+	Region_enfant4 : new PanelItem(),
 	
 	init : function() {
 	
+		//détection online/offline
+		//window.addEventListener("offline", function(e) {alert("offline");});
+		
 		this.Menu_Accueil.panel = new Ext.Panel({
 				id: 'Menu_Accueil-panel',
 				title: 'Accueil',
@@ -94,7 +103,45 @@ MainApp.ViewPort = {
 				id: 'Menu_User-menu',
 				items: [{text:'Connexion',iconCls:'key',handler: function(){MainApp.Login.ask();}}]
 		});
-			
+		
+		this.Region_famille.panel = new Ext.Panel({
+				id: 'Region_famille',
+				width: 600,
+				border: false,
+				//height: 100,
+				layout : 'column'
+		});
+		this.Region_parent.panel = new Ext.Panel({
+				id: 'Region_parent',
+				width: 600,
+				border: false,
+				//height: 100,
+				layout : 'column'
+		});
+		this.Region_enfant1.panel = new Ext.Panel({
+				id: 'Region_enfant1',
+				width: 600,
+				border: false,
+				layout : 'column'
+		});
+		this.Region_enfant2.panel = new Ext.Panel({
+				id: 'Region_enfant2',
+				width: 600,
+				border: false,
+				layout : 'column'
+		});
+		this.Region_enfant3.panel = new Ext.Panel({
+				id: 'Region_enfant3',
+				width: 600,
+				border: false,
+				layout : 'column'
+		});
+		this.Region_enfant4.panel = new Ext.Panel({
+				id: 'Region_enfant4',
+				width: 600,
+				border: false,
+				layout : 'column'
+		});
 	
 		this.AppPort = new Ext.Viewport({
 				id: 'MainApp-viewport',
@@ -123,13 +170,11 @@ MainApp.ViewPort = {
 					items:[this.Menu_Accueil.get(),this.Menu_Adherents.get(),this.Menu_Activites.get(),this.Menu_Clsh.get(),this.Menu_Perisco.get(),this.Menu_Paiements.get(),this.Menu_Config.get()]
 				}, {
 					region: 'center',
-					layout: {
-						type: 'table',
-						columns: 2
-					},
+					//layout: 'vbox',
 					autoScroll: true,
 					border: true,
-					id: 'viewport_center_region'
+					id: 'viewport_center_region',
+					items:[this.Region_famille.get(),this.Region_parent.get(),this.Region_enfant1.get(),this.Region_enfant2.get(),this.Region_enfant3.get(),this.Region_enfant4.get()]
 				}, {
 					region: 'south',
 					html: '',
