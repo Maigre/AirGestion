@@ -57,7 +57,7 @@ MainApp.Content = {
 								   handler: function(e,f,g){
 									   	Ext.Msg.show({
 											title: 'Alerte',
-											msg: 'Voulez-vous vraiment supprimer cette famille?',
+											msg: 'Voulez-vous vraiment supprimer cette famille et tous ses adhérents?',
 											width: 300,
 											buttons: Ext.Msg.YESNO,
 											//multiline: true,
@@ -275,6 +275,7 @@ MainApp.Content = {
 		
 		this.Referent.panel = this.addMember('Content_Referent-panel','<?=$referent?>',this.Referent);
 		this.Referent.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le référent
+		this.Referent.panel.tools[1].hidden = true; //désactiver la supression d'un adhérent, elle se fait par supression de sa famille
 		this.Referent.load();
 		Ext.getCmp('Region_parent').add(this.Referent.get());
 		<?php if (isset($conjoint)): ?> 

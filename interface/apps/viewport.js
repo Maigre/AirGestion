@@ -51,6 +51,9 @@ MainApp.ViewPort = {
 	
 	init : function() {
 	
+		//détection online/offline
+		//window.addEventListener("offline", function(e) {alert("offline");});
+		
 		this.Menu_Accueil.panel = new Ext.Panel({
 				id: 'Menu_Accueil-panel',
 				title: 'Accueil',

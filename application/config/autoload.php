@@ -64,7 +64,7 @@ $autoload['libraries'] = array('session','auth37','parser','database', 'datamapp
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('form', 'formatfield', 'url', 'gestion_helper');
+$autoload['helper'] = array('form', 'formatfield', 'url', 'gestion_helper', 'date');
 
 
 /*

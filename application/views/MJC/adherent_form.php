@@ -285,10 +285,9 @@ MainApp.Content = {
 									askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+action.result.idfamille);
 								<?php endif ?>
 								Ext.Msg.alert('Success', action.result.msg);
-								console.info();
 								this.form.owner.ownerCt.url = 'interface/c_adherent/display/'+<?=$adherent->id?>,
 							   	this.form.owner.ownerCt.him.load();
-								//console.info(this.form.owner.ownerCt);
+								console.info(this.form.owner.ownerCt);
 								//this.form.owner.ownerCt.doLayout();
 								
 								//console.info(windowindex);
