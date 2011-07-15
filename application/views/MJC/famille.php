@@ -334,5 +334,4 @@ MainApp.Content = {
 	}
 }
 MainApp.Content.make();
-console.info('ok');
 </script>

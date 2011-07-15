@@ -274,7 +274,7 @@ MainApp.Content = {
 				handler: function()
 				{
 					<?php if ($adherent->id==0):?> //Création d'un nouvel adherent lance sauvegarde famille
-									Ext.getCmp('Form_Famille-panel').submit();
+								Ext.getCmp('Form_Famille-panel').submit();
 					<?php endif ?>
 					
 					this.ownerCt.ownerCt.getForm().submit ({
@@ -287,7 +287,7 @@ MainApp.Content = {
 								Ext.Msg.alert('Success', action.result.msg);
 								this.form.owner.ownerCt.url = 'interface/c_adherent/display/'+<?=$adherent->id?>,
 							   	this.form.owner.ownerCt.him.load();
-								console.info(this.form.owner.ownerCt);
+								//console.info(this.form.owner.ownerCt);
 								//this.form.owner.ownerCt.doLayout();
 								
 								//console.info(windowindex);

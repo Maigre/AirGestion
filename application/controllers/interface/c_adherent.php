@@ -31,7 +31,7 @@ class C_adherent extends CI_Controller {
 			foreach($this->famille as $famille){
 				$number_family=$number_family+1;
 			}
-			//TODO : demande quelle famille si il y en a plusieurs !!
+			//demande quelle famille si il y en a plusieurs
 			if ($number_family>1){
 				$data['double_famille']=true;
 				//get all referents
@@ -72,7 +72,6 @@ class C_adherent extends CI_Controller {
 	
 	public function save($idAdherent, $statutAdherent=1, $idFamille=null){
 	
-		
 		$this->load->model('MJC/adherent','run_adherent');
 		$u = $this->run_adherent;
 		
@@ -134,7 +133,7 @@ class C_adherent extends CI_Controller {
 		$famille = $this->run_famille;
 			
 		////////////////////
-		//Case of new family and new referent
+		//Case of new adherent
 		if ($idAdherent==0){
 			//verification des données du formulaire adherent
 			
@@ -176,7 +175,6 @@ class C_adherent extends CI_Controller {
 		// Save
 		
 		$u->save($related_fields);
-		
 		//case new conjoint or kid send the id to the new_adherent() function.
 		if ($idAdherent==0){
 			$this->idNewadherent=$u->id;
@@ -249,6 +247,7 @@ class C_adherent extends CI_Controller {
     public function new_adherent($statutAdherent, $idFamille){
     	$this->save(0, $statutAdherent, $idFamille);
     	$this->load->model('process','process');
+    	echo $this->idNewadherent;
 		$this->process->display($idFamille,$this->idNewadherent,$this->idNewadherent);
     }
     
