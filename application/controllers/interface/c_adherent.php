@@ -31,7 +31,7 @@ class C_adherent extends CI_Controller {
 			foreach($this->famille as $famille){
 				$number_family=$number_family+1;
 			}
-			//demande quelle famille si il y en a plusieurs
+			//cas plusieurs familles
 			if ($number_family>1){
 				$data['double_famille']=true;
 				//get all referents
@@ -179,8 +179,11 @@ class C_adherent extends CI_Controller {
 		if ($idAdherent==0){
 			$this->idNewadherent=$u->id;
 		}
-		$answer['success'] = true;
-  		echo json_encode($answer);
+		else{
+			$answer['success'] = true;
+	  		echo json_encode($answer);
+		}
+		
 	}
 	
 	public function load($idAdherent){
@@ -247,7 +250,6 @@ class C_adherent extends CI_Controller {
     public function new_adherent($statutAdherent, $idFamille){
     	$this->save(0, $statutAdherent, $idFamille);
     	$this->load->model('process','process');
-    	echo $this->idNewadherent;
 		$this->process->display($idFamille,$this->idNewadherent,$this->idNewadherent);
     }
     
@@ -256,11 +258,26 @@ class C_adherent extends CI_Controller {
 		$u = $this->run_adherent;
 		$u->where('id', $idAdherent)->get();
 		//array of related fields (HAS_ONE)
-		$related_table=array('famille','csp','situationfamiliale','statutadherent');
+		$related_table=array('csp','situationfamiliale','statutadherent');
 		foreach ($related_table as $field){
 			$u->$field->get();
-			$field=$u->famille;
+			$field=$u->$field;
 			$links_to_delete[]=$field;
+		}
+		//vérification unicité famille
+		//test unicité de la famille
+		$this->load->model('MJC/famille','famille');
+		$this->famille->where_related_adherent('id', $idAdherent)->get();
+		$number_family=0;
+		foreach($this->famille as $famille){
+			$number_family=$number_family+1;
+		}
+		//cas famile unique
+		if ($number_family<2){
+			$links_to_delete[]=$this->famille;
+		}
+		else{
+		
 		}
 		$u->delete($links_to_delete);
 		$u->delete();

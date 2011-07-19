@@ -73,6 +73,8 @@ class Process extends CI_Model
 					
 					} 
 				}
+				//id de l'adherent cliqué
+				$data['selected_adherent']=$idAdherent;
 				$this->load->view('MJC/famille',$data);
 			}
 		}

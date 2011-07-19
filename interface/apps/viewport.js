@@ -42,12 +42,15 @@ MainApp.ViewPort = {
  
 	Menu_User : new PanelItem(),
 	
-	Region_famille : new PanelItem(),
+	/*Region_famille : new PanelItem(),
 	Region_parent : new PanelItem(),
+	Region_parent2 : new PanelItem(),
 	Region_enfant1 : new PanelItem(),
 	Region_enfant2 : new PanelItem(),
 	Region_enfant3 : new PanelItem(),
 	Region_enfant4 : new PanelItem(),
+	Region_adherent : new PanelItem(),
+	*/
 	
 	init : function() {
 	
@@ -104,44 +107,75 @@ MainApp.ViewPort = {
 				items: [{text:'Connexion',iconCls:'key',handler: function(){MainApp.Login.ask();}}]
 		});
 		
-		this.Region_famille.panel = new Ext.Panel({
+		/*this.Region_famille.panel = new Ext.Panel({
 				id: 'Region_famille',
+				title: 'Info Famille',
+				iconCls: 'group',
 				width: 600,
 				border: false,
+				hidden: true,
 				//height: 100,
 				layout : 'column'
 		});
 		this.Region_parent.panel = new Ext.Panel({
 				id: 'Region_parent',
+				iconCls: 'user',
 				width: 600,
 				border: false,
+				hidden: true,
+				//height: 100,
+				layout : 'column'
+		});
+		this.Region_parent2.panel = new Ext.Panel({
+				id: 'Region_parent2',
+				iconCls: 'user',
+				width: 600,
+				border: false,
+				hidden: true,
 				//height: 100,
 				layout : 'column'
 		});
 		this.Region_enfant1.panel = new Ext.Panel({
 				id: 'Region_enfant1',
+				iconCls: 'user',
 				width: 600,
 				border: false,
+				hidden: true,
 				layout : 'column'
 		});
 		this.Region_enfant2.panel = new Ext.Panel({
 				id: 'Region_enfant2',
+				iconCls: 'user',
 				width: 600,
 				border: false,
+				hidden: true,
 				layout : 'column'
 		});
 		this.Region_enfant3.panel = new Ext.Panel({
 				id: 'Region_enfant3',
+				iconCls: 'user',
 				width: 600,
 				border: false,
+				hidden: true,
 				layout : 'column'
 		});
 		this.Region_enfant4.panel = new Ext.Panel({
 				id: 'Region_enfant4',
+				iconCls: 'user',
 				width: 600,
 				border: false,
+				hidden: true,
 				layout : 'column'
 		});
+		this.Region_adherent.panel= new Ext.Panel({
+				id: 'Region_adherent',
+				width: 600,
+				height: 650,
+				border: true,
+				layout : 'accordion',
+				items: [this.Region_famille.get(),this.Region_parent.get(),this.Region_parent2.get(),this.Region_enfant1.get(),this.Region_enfant2.get(),this.Region_enfant3.get(),this.Region_enfant4.get()]
+		});
+		*/
 	
 		this.AppPort = new Ext.Viewport({
 				id: 'MainApp-viewport',
@@ -166,15 +200,16 @@ MainApp.ViewPort = {
 							titleCollapse: true,
 							animate: true,
 							activeOnTop: true
-						},
+					},
 					items:[this.Menu_Accueil.get(),this.Menu_Adherents.get(),this.Menu_Activites.get(),this.Menu_Clsh.get(),this.Menu_Perisco.get(),this.Menu_Paiements.get(),this.Menu_Config.get()]
 				}, {
 					region: 'center',
 					//layout: 'vbox',
 					autoScroll: true,
 					border: true,
-					id: 'viewport_center_region',
-					items:[this.Region_famille.get(),this.Region_parent.get(),this.Region_enfant1.get(),this.Region_enfant2.get(),this.Region_enfant3.get(),this.Region_enfant4.get()]
+					margin: 5,
+					id: 'viewport_center_region'//,
+					//items:[this.Region_adherent.get()]
 				}, {
 					region: 'south',
 					html: '',

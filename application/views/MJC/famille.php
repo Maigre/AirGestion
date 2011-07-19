@@ -2,6 +2,7 @@
 
 MainApp.Content = {
 
+	Region_famille : new PanelItem(),
 	Famille : new PanelItem(),
 	Referent : new PanelItem(),
 	Conjoint : new PanelItem(),
@@ -11,13 +12,10 @@ MainApp.Content = {
 	
 	family_bar : new PanelItem(),
 	
-	//Adherent_double_famille : new PanelItem(),
-	//doublefamilleWindow : new PanelItem(),
 	
 	width : 200,
 	height_adults : 210,
 	height_kids : 150,
-	margin : 5,
 	// ----------------
 	//	Create family buttons bar
 	// ----------------	
@@ -27,9 +25,6 @@ MainApp.Content = {
 		return new Ext.Panel({
 						id: w_id,
 						him: himself,
-						//x: this.x,
-						//y: this.y,
-						//height: c_height,
 						autoHeight: true,
 						autoWidth: true,
 						bodyStyle: 'padding:5px',
@@ -37,7 +32,7 @@ MainApp.Content = {
 						iconCls: 'group',
 						constrain: true,
 						layout: 'auto',
-						style : 'margin-left:5px;margin-top:5px',
+						//style : 'margin-left:5px;margin-top:5px',
 						<?php if ($famille===0): ?> //nouvelle famille acces direct au formulaire
 							title: 'Nouvelle Famille ',
 							url : 'interface/c_famille/form/0',
@@ -62,14 +57,18 @@ MainApp.Content = {
 											buttons: Ext.Msg.YESNO,
 											//multiline: true,
 											fn: function(btn,f,g,h){
-												console.info(btn);
 												if (btn == 'yes'){
 													Ext.getCmp(w_id).url = 'interface/c_famille/delete/'+f_id;
 													Ext.getCmp(w_id).him.load();
 													Ext.getCmp('Region_famille').removeAll();
+													Ext.getCmp('Region_famille').setVisible(false);
 													Ext.getCmp('Region_parent').removeAll();
+													Ext.getCmp('Region_parent').setVisible(false);
+													Ext.getCmp('Region_parent2').removeAll();
+													Ext.getCmp('Region_parent2').setVisible(false);
 													<?php for ($i=1; $i<=4; $i++){ ?>
 														Ext.getCmp('Region_enfant<?=$i?>').removeAll();
+														Ext.getCmp('Region_enfant<?=$i?>').setVisible(false);
 													<?php } ?>
 												}
 											},
@@ -96,7 +95,7 @@ MainApp.Content = {
 						iconCls: 'user',
 						constrain: true,
 						layout: 'auto',
-						style : 'margin-left:5px;margin-top:5px',
+						//style : 'margin-left:5px;margin-top:5px',
 						<?php if ($referent===0): ?> //nouvel adherent, acces direct au formulaire
 							title: 'Nouveau référent',
 							url : 'interface/c_adherent/form/0',
@@ -106,22 +105,23 @@ MainApp.Content = {
 						<?php endif; ?>			
 						tools: [{
 								   type: 'refresh',
+								   toolip: 'refresh',
 								   handler: function(e,f,g){
 									   g.ownerCt.url = 'interface/c_adherent/form/'+a_id;
 									   g.ownerCt.him.load();
 							   		}
 							   	},
+							   	//Bouton de suppression d'un adherent
 							   	{
 								   type: 'close',
+								   toolip: 'Supprimer',
 								   handler: function(e,f,g){
 									   	Ext.Msg.show({
 											title: 'Alerte',
 											msg: 'Voulez-vous vraiment supprimer cet adhérent?',
 											width: 300,
 											buttons: Ext.Msg.YESNO,
-											//multiline: true,
 											fn: function(btn,f,g,h){
-												console.info(btn);
 												if (btn == 'yes'){
 													Ext.getCmp(w_id).url = 'interface/c_adherent/delete/'+a_id;						
 													Ext.getCmp(w_id).him.load();													
@@ -133,6 +133,7 @@ MainApp.Content = {
 										});
 							   		}
 							   	},
+							   	////Bouton de rattachement a une deuxieme famille
 							   	{
 								 	type: 'pin',
 								 	tooltip: 'Refresh form Data',
@@ -237,7 +238,8 @@ MainApp.Content = {
 													items: [Adherent_double_famille],
 													url: BASE_URL+'interface/c_adherent/save/1'
 												});
-										//this.createWindowDoubleFamille();
+										
+										//Si deja deux familles, affiche les deux referents et demande confirmation
 										if (this.ownerCt.ownerCt.items.items[0].referent1 !=''){
 												Ext.Msg.show({
 													title: 'Alerte',
@@ -255,7 +257,6 @@ MainApp.Content = {
 												});
 										}
 										else Ext.getCmp('doublefamilleWindow').show();
-										
 									}
 							   	}]
 			});
@@ -263,53 +264,92 @@ MainApp.Content = {
 	
 	make : function () {
 		
-		Ext.getCmp('Region_famille').removeAll();
-		Ext.getCmp('Region_parent').removeAll();
-		<?php for ($i=1; $i<=4; $i++){ ?>
-			Ext.getCmp('Region_enfant<?=$i?>').removeAll();
-		<?php } ?>
+		Ext.getCmp('viewport_center_region').removeAll();
+		
+		//Layout the center region
+		this.Region_famille.panel = new Ext.Panel({
+				id: 'Region_famille',
+				border: false,
+				layout: 'border',
+				items:[{
+					region: 'center',
+					autoScroll: true,
+					border: true,
+					id: 'Region_info_famille',
+					layout: 'accordion',
+					layoutConfig: {
+						//layout-specific configs go here
+						//titleCollapse: true,
+						animate: true,
+						align: 'center',
+						hideCollapseTool: true,
+						collapseFirst: false,
+						multi: true
+					}},
+					{region: 'east',
+					width: 520,
+					autoScroll: true,
+					border: true,
+					id: 'Region_activite'}					
+				]
+		});
+		
+		//Height & width
+		Ext.getCmp('Region_famille').setHeight(Ext.getCmp('viewport_center_region').getHeight()-2);
+		Ext.getCmp('Region_info_famille').setWidth(Ext.getCmp('viewport_center_region').getWidth()-400);
+		
+		//add & clean
+		Ext.getCmp('viewport_center_region').add(this.Region_famille.get());
+		Ext.getCmp('Region_info_famille').removeAll();
 				
+		//////Create & add family&adherent panels
+		//famille
 		this.Famille.panel = this.addFamilypanel('Famille-panel','<?=$famille?>',this.Famille);
 		this.Famille.load();
-		Ext.getCmp('Region_famille').add(this.Famille.get());
-		
-		this.Referent.panel = this.addMember('Content_Referent-panel','<?=$referent?>',this.Referent);
+		Ext.getCmp('Region_info_famille').add(this.Famille.get());
+				
+		//referent		
+		this.Referent.panel = this.addMember('Content_Adherent-<?=$referent?>-panel','<?=$referent?>',this.Referent);
 		this.Referent.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le référent
-		this.Referent.panel.tools[1].hidden = true; //désactiver la supression d'un adhérent, elle se fait par supression de sa famille
+		this.Referent.panel.tools[1].hidden = true; //désactiver la supression d'un référent, elle se fait par supression de sa famille
 		this.Referent.load();
-		Ext.getCmp('Region_parent').add(this.Referent.get());
+		Ext.getCmp('Region_info_famille').add(this.Referent.get());
+		
+		//conjoint		
 		<?php if (isset($conjoint)): ?> 
-			this.Conjoint.panel = this.addMember('Content_Conjoint-panel',<?=$conjoint?>,this.Conjoint); 
-			
+			this.Conjoint.panel = this.addMember('Content_Adherent-<?=$conjoint?>-panel',<?=$conjoint?>,this.Conjoint); 
 			<?php if ($isnewconjoint): ?>
 				this.Conjoint.panel.url = 'interface/c_adherent/form/<?=$conjoint?>',
 			<?php endif; ?>
 			this.Conjoint.panel.tools[2].hidden = true; //désactiver le rattachement à une autre famille pour le conjoint
 			this.Conjoint.load();
-			Ext.getCmp('Region_parent').add(this.Conjoint.get());
+			Ext.getCmp('Region_info_famille').add(this.Conjoint.get());
 		<?php endif; ?>
 		
+		//enfant
 		<?php if (isset($enfants)) foreach($enfants as $i=>$kid): ?>
-			this.Enfant_<?=$i?>.panel = this.addMember('Content_Enfant_<?=$i?>-panel',<?=$kid?>,this.Enfant_<?=$i?>);
+			this.Enfant_<?=$i?>.panel = this.addMember('Content_Adherent-<?=$kid?>-panel',<?=$kid?>,this.Enfant_<?=$i?>);
 			
 			<?php if ($isnewkid[$i]): ?>
 				this.Enfant_<?=$i?>.panel.url = 'interface/c_adherent/form/<?=$kid?>',
 			<?php endif ?>
 			
 			this.Enfant_<?=$i?>.load();
-			<?php if ($i<2) $region="Region_enfant1";
-					elseif (($i>1) AND ($i<4)) $region="Region_enfant2";
-					elseif (($i>3) AND ($i<6)) $region="Region_enfant3";
-					elseif (($i>5) AND ($i<8)) $region="Region_enfant4";
-			?>
-			Ext.getCmp('<?=$region?>').add(this.Enfant_<?=$i?>.get());
+			<?php $k=$i+1;
+			$region='Region_enfant'.$k;?>
+			Ext.getCmp('Region_info_famille').add(this.Enfant_<?=$i?>.get());
 		<?php endforeach; ?>
 		
+		//Ouvre le panel de l'adherent selectionne
+		Ext.getCmp('Content_Adherent-<?=$selected_adherent?>-panel').expand();
+		
+		////boutons de creation nouveaux adherents
 		this.family_bar.panel = new Ext.Panel({
 		    title: 'Famille <?=$nom?>',
 		    id: 'family_bar',
 		    iconCls: 'group',
 		    tbar: [
+			//conjoint
 		    <?php if (!isset($conjoint)): ?> 
 		    {
 		        text: 'Conjoint',
@@ -320,6 +360,7 @@ MainApp.Content = {
 				} 
 		    },
 		    <?php endif; ?>
+		    //enfant
 		    {
 		        text: 'Enfant',
 		        iconCls: 'add',
