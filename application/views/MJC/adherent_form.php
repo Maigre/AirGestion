@@ -78,9 +78,9 @@ MainApp.Content = {
 				}
 			}          			
 		});
-		<?php if ($adherent->id!=0):?>
+		/*<?php if ($adherent->id!=0):?>
 			this.Form_Data_<?=$adherent->id?>.load();
-		<?php endif ?>
+		<?php endif ?>*/
 		
 		//create the form panel
 		this.Form_Adherent_<?=$adherent->id?>.panel = new Ext.FormPanel
@@ -110,13 +110,13 @@ MainApp.Content = {
 							name : "nom",
 							fieldLabel : "Nom",
 							allowBlank: false,
-							value:'Byles',
+							value:'',
 							anchor:'96%'
 						},{
 							xtype:'textfield',
 							name : "prenom",
 							fieldLabel : "Pr&eacutenom",
-							value:'Junior',
+							value:'',
 							anchor:'96%'
 						}/*,{
 							  xtype: 'radiogroup',
@@ -148,14 +148,14 @@ MainApp.Content = {
 							xtype: 'datefield',
 							name : "datenaissance",
 							fieldLabel : "Date de naissance",
-							value:'Byles',
+							value:'',
 							anchor:'96%'
 						},{
 							xtype:'textfield',
 							vtype: 'email',
 							name : "email",
 							fieldLabel : "Email",
-							value:'yeah@airlab.fr',
+							value:'@airlab.fr',
 							anchor:'96%'
 						},{
 							xtype: 'textfield',
@@ -195,7 +195,9 @@ MainApp.Content = {
 						}
 						<?php endif; ?>
 						]
-						},{
+						},
+						//deuxieme colonne du formulaire
+						{
 						xtype: 'container',
 					    columnWidth:0.5,
 					    layout: 'anchor',
@@ -230,8 +232,8 @@ MainApp.Content = {
 						},{
 							xtype:'textfield',
 							name : "employeur",
+							value:'',
 							fieldLabel : "Employeur",
-							value:'John',
 							anchor:'96%'
 						},{
 							xtype: 'numberfield',
@@ -263,18 +265,18 @@ MainApp.Content = {
 						]}]}],
 	
 			buttons:
-			[{
+			[/*{
 				text: 'Reset',
 				handler: function()
 				{
 					this.ownerCt.ownerCt.getForm().reset();
 				}
-			},{
+			},*/{
 				text: 'Submit',
 				handler: function()
 				{
 					<?php if ($adherent->id==0):?> //Création d'un nouvel adherent lance sauvegarde famille
-									Ext.getCmp('Form_Famille-panel').submit();
+								Ext.getCmp('Form_Famille-panel').submit();
 					<?php endif ?>
 					
 					this.ownerCt.ownerCt.getForm().submit ({
@@ -284,13 +286,8 @@ MainApp.Content = {
 								<?php if ($adherent->id==0):?>
 									askAndDo(MainApp.ViewPort.AppPort.layout.regions.center.id,'interface/c_famille/display/'+action.result.idfamille);
 								<?php endif ?>
-								Ext.Msg.alert('Success', action.result.msg);
 								this.form.owner.ownerCt.url = 'interface/c_adherent/display/'+<?=$adherent->id?>,
 							   	this.form.owner.ownerCt.him.load();
-								console.info(this.form.owner.ownerCt);
-								//this.form.owner.ownerCt.doLayout();
-								
-								//console.info(windowindex);
 						},
 						failure: function(form, action) {
 						   Ext.Msg.alert('Failure', "An error occured, please try again later.");

@@ -10,14 +10,20 @@ class Process extends CI_Model
 			
 			//get the related family(s)
 			$this->load->model('MJC/famille','famille');
-			$this->famille->where_related_adherent('id', $idAdherent)->select('id')->get();
-
-			$data['famille'] = $this->famille->id;
+			if ($idAdherent==0){
+				$this->famille->where('id', $idFamille)->select('id')->get();
+				$data['famille'] = $idFamille;
+			}
+			else{
+				$this->famille->where_related_adherent('id', $idAdherent)->select('id')->get();
+				$data['famille'] = $this->famille->id;
+			}
+						
 			$count=0;
 			foreach($this->famille as $famille){
 				$count=$count+1;
 			}
-			//TODO : demande quelle famille si il y en a plusieurs !!
+			//demande quelle famille si il y en a plusieurs !!
 			if ($count>1){
 				
 				//get all referents
@@ -67,6 +73,8 @@ class Process extends CI_Model
 					
 					} 
 				}
+				//id de l'adherent cliqué
+				$data['selected_adherent']=$idAdherent;
 				$this->load->view('MJC/famille',$data);
 			}
 		}

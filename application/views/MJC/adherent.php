@@ -57,6 +57,7 @@ MainApp.Content = {
 			$title=$title.' '.calcul_age($adherent->datenaissance).' ans';
 		}
 		?>
+		
 		Ext.getCmp('<?=$win?>').setTitle('<?=$title?>');
 		<?php if ($adherent->sexe == 1): ?> 
 			Ext.getCmp('<?=$win?>').setIconCls('user_female'); 

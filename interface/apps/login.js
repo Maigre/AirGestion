@@ -107,6 +107,7 @@ MainApp.Login = {
 			});
 			
 			loginWindow.show();
-						
+			//MainApp.Login.user = AirTamias;
+			//MainApp.ViewPort.start();			
 		}
 }

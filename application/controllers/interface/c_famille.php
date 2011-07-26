@@ -137,21 +137,38 @@ class C_famille extends CI_Controller {
 	}
 
 	public function delete($idFamille){
-    		$this->load->model('MJC/famille','run_famille');
-		$u = $this->run_famille;
-		$u->where('id', $idFamille)->get();
+		$this->load->model('MJC/famille','run_famille');
+		$f = $this->run_famille;
+		$f->where('id', $idFamille)->get();
 		//array of related fields
 		$related_table=array('adherent','groupe');
 
 		foreach ($related_table as $field){
-			$u->$field->get();
-			$field=$u->$field;
+			$f->$field->get();
+			$field=$f->$field;
 			$links_to_delete[]=$field;
 		}
-		$u->adherent->delete_all();
-		$u->delete($links_to_delete);
-		$u->delete();		
-    	}
+		$this->load->model('MJC/adherent','run_adherent');
+		$a = $this->run_adherent;
+		$a->where_related_famille('id', $idFamille)->get();
+		
+		//Vérifier que l'adherent n'appartient pas à une autre famille auquel cas il ne faut pas le supprimer.
+		foreach ($a as $adherent){
+			$this->load->model('MJC/famille','famille');
+			$this->famille->where_related_adherent('id', $adherent->id)->select('id')->get();
+			$count=0;
+			foreach($this->famille as $famille){
+				$count=$count+1;
+			}
+			//Si une seule famille, supression de l'adherent
+			if ($count==1){
+				$a->delete();
+			}			
+		}
+		//$f->adherent->delete_all();
+		$f->delete($links_to_delete);
+		$f->delete();		
+	}
 	
 	
 }
