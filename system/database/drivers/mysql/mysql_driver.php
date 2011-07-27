@@ -339,7 +339,12 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function insert_id()
 	{
-		return @mysql_insert_id($this->conn_id);
+		/*MODIFICATION*/
+		$res = mysql_fetch_assoc($this->_execute('SELECT LAST_INSERT_ID() AS insert_id'));
+		return $res['insert_id'];
+		/*FIN MODIFICATION*/
+		
+		//return @mysql_insert_id($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
