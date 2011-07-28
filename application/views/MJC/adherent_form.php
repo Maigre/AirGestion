@@ -265,13 +265,7 @@ MainApp.Content = {
 						]}]}],
 	
 			buttons:
-			[/*{
-				text: 'Reset',
-				handler: function()
-				{
-					this.ownerCt.ownerCt.getForm().reset();
-				}
-			},*/{
+			[{
 				text: 'Submit',
 				handler: function()
 				{
@@ -296,11 +290,7 @@ MainApp.Content = {
 				}
 			}]
 		});
-		/*
-		this.comboboxstore.on('load', function (datastore) {
-			var rec= datastore.getAt(0);
-		});
-		*/
+		
 		this.Form_Data_<?=$adherent->id?>.on('load', function (datastore) {
 			var rec= datastore.getAt(0);
 			Ext.getCmp('Form_Adherent_<?=$adherent->id?>-panel').getForm().loadRecord(rec);

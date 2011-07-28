@@ -20,11 +20,6 @@ MainApp.Content = {
 		];
 		
 		var ds = new Ext.data.ArrayStore({
-			// store configs
-			//autoDestroy: true,
-			//storeId: 'myStore',
-			// reader configs
-			//idIndex: 0,
 			fields: [
 				{name: 'nom',  type: 'string'},
 				{name: 'prenom',  type: 'string'},

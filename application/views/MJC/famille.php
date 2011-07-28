@@ -341,8 +341,9 @@ MainApp.Content = {
 		<?php endforeach; ?>
 		
 		//Ouvre le panel de l'adherent selectionne
+		<?php if (isset($enfants)):?>
 		Ext.getCmp('Content_Adherent-<?=$selected_adherent?>-panel').expand();
-		
+		<?php endif; ?>
 		////boutons de creation nouveaux adherents
 		this.family_bar.panel = new Ext.Panel({
 		    title: 'Famille <?=$nom?>',
