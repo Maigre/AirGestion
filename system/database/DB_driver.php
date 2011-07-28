@@ -1,4 +1,10 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+/*AIR GESTION
+//ATTENTION MODIFICATION : 2
+// + 1 MODIF dans mysql_driver.php (function insert_id())
+*/
+
 /**
  * CodeIgniter
  *
@@ -231,6 +237,7 @@ class CI_DB_driver {
 		}
 	}
 
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -295,15 +302,46 @@ class CI_DB_driver {
 		// Start the Query Timer
 		$time_start = list($sm, $ss) = explode(' ', microtime());
 		
+		/**************MODIFICATION SUIVI HISTORIQUE*****************/
+		
 		
 		//On écrit la requête dans la table historique des requêtes.
 		//on vérifie que la requête correspond bien à une modification de la database (i.e la requête commence par INSERT, UPDATE ou DELETE)
-		$premieres_lettres= substr($sql, 0, 6);
-		if ((($premieres_lettres=='INSERT') OR ($premieres_lettres=='UPDATE') OR ($premieres_lettres=='DELETE')) AND (!stristr($sql,"system_sessions"))){
-			$date= now();
-			$requete= "INSERT INTO `historique` VALUES (null,\"".$sql."\",'".$date."')";
-			$this->simple_query($requete);
+		
+		//parse the request to get details
+		$sql = str_replace("\n"," ",$sql);
+		$parse = histo_parse($sql);
+		//print_r($parse); die;
+		$query_done = '';
+		if ($parse)
+		{
+			if (($parse['type'] == 'INSERT') or ($parse['type'] == 'UPDATE') or ($parse['type'] == 'DELETE'))
+			{
+				if ($parse['table'] != 'system_sessions')
+				{
+					$requete= "INSERT INTO `historique` VALUES (null,\"".$sql."\",'".now()."','".$parse['type']."',\"".$parse['table']."\",null,0)";
+					$this->simple_query($requete);
+					
+					if ($parse['type'] == 'INSERT') $parse['historique_id'] = $this->insert_id();
+				}
+			}
 		}
+		else
+		{
+			$requete= "INSERT INTO `historique` VALUES (null,\"".$sql."\",\"".now()."\",null,null,null,1)";
+			$this->simple_query($requete);
+		}		
+		
+		/*LOG IN FILE !
+		if (substr($sql,0,6) != 'SELECT') 
+		{
+			if ($parse) $valid = 1; else $valid = 0;
+			file_put_contents('track.txt',"--- valid: ".$valid."---- type ".$parse['type']." --- query histo : ".$query_done."\n",FILE_APPEND);
+			file_put_contents('track.txt',$sql."\n",FILE_APPEND);
+		}
+		*/
+	
+		/**************FIN MODIFICATION*****************/
 		
 		// Run the Query
 		if (FALSE === ($this->result_id = $this->simple_query($sql)))
@@ -343,6 +381,16 @@ class CI_DB_driver {
 			return FALSE;
 		}
 		
+		
+		/****************MODIFICATION************///
+				
+		if ($parse['type'] == 'INSERT')
+		{		
+			$requete = "UPDATE `historique` SET `insert_id` = ".$this->insert_id()." WHERE `id` = ".$parse['historique_id'];
+			$this->simple_query($requete);
+		}
+		
+		/*******FIN MODIF ******/
 
 		// Stop and aggregate the query time results
 		$time_end = list($em, $es) = explode(' ', microtime());
